@@ -33,10 +33,10 @@ class Grid: SKScene {
     static var display: (main: String, sub: String) = (main: "nil", sub: "nil")
     static var newPowerup = false
     static var active: Grid?
-    static let moveSound = Grid.getSound("Move.wav")
-    static let dieSound = Grid.getSound("Die.wav")
-    static let winSound = Grid.getSound("Win.wav")
-    static let timeSound = Grid.getSound("Time.wav")
+    static let moveSound = SoundPlayer.getSound("Move")
+    static let dieSound = SoundPlayer.getSound("Die")
+    static let winSound = SoundPlayer.getSound("Win")
+    static let timeSound = SoundPlayer.getSound("Time")
     var chain: [(Int,Int,SKShapeNode?)]?
     var chainLine: SKShapeNode?
     var falling: [SKShapeNode?] = []
@@ -58,16 +58,7 @@ class Grid: SKScene {
     var pointsSoFar = 0
     var record: Records?
     
-    static func getSound(sound: String) -> AVAudioPlayer? {
-        do {
-            return try AVAudioPlayer(contentsOfURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource(sound, ofType:nil)!))
-        } catch {
-            return nil
-        }
-    }
-    
     static func create(size: CGSize) {
-        moveSound?.volume = 0.25
         if (grids.count == 0) {
             for i in 0..<3 {
                 let m = Grid.Mode(rawValue: i)
@@ -571,9 +562,9 @@ class Grid: SKScene {
             }
         case .EnergyBoost:
             if (mode == .Moves) {
-                freezeMoves += 4
+                freezeMoves += 6
             } else {
-                freezeMoves += 3
+                freezeMoves += 4 + Int(round(2*Double(energy)/Double(Grid.maxEnergy)))
                 energy = Grid.maxEnergy
             }
         case .WildcardBomb:
@@ -625,11 +616,14 @@ class Grid: SKScene {
                         swaps += 1
                     } else {
                         freezeMoves -= 1
+                        lastTime = NSDate().timeIntervalSince1970
                     }
                     movePoint(from: (chain!.first!.0,chain!.first!.1), to: (chain!.last!.0,chain!.last!.1))
                     clearChain()
-                    if (energy <= Grid.energyThreshold && mode != .Timed && energy > 0) {
+                    if (energy <= (mode == .Moves ? Grid.moveEnergy*3 : Grid.energyThreshold) && mode != .Timed && energy > 0) {
                         Grid.timeSound?.play()
+                    } else if (energy > 0) {
+                        Grid.moveSound?.play()
                     }
                     return
                 }
@@ -646,6 +640,7 @@ class Grid: SKScene {
                 let increase = max(min(max(Int(exp2(Double(min(t-2,4))))-(swaps*2),0)+t-t2,Grid.maxXP()),0)*getDiff()
                 if (mode != .Standard && freezeMoves > 0) {
                     freezeMoves -= 1
+                    lastTime = NSDate().timeIntervalSince1970
                 } else if (mode == .Moves) {
                     energy = max(energy-Grid.moveEnergy,0)
                 }
@@ -685,8 +680,10 @@ class Grid: SKScene {
                 if (Challenge.challenge != nil) {
                     Challenge.challenge!.check()
                 }
-                if (energy <= Grid.energyThreshold && mode == .Moves && energy > 0) {
+                if (energy <= Grid.moveEnergy*3 && mode == .Moves && energy > 0) {
                     Grid.timeSound?.play()
+                } else if (energy > 0) {
+                    Grid.moveSound?.play()
                 }
             }
             clearChain()
@@ -1155,7 +1152,7 @@ class Grid: SKScene {
             let d = NSDate().timeIntervalSince1970 - lastTime
             if (mode == .Timed && freezeMoves == 0 && started && d >= 1) {
                 energy = max(energy - Grid.maxEnergy/Grid.time, 0)
-                if (energy <= Grid.energyThreshold && energy > 0) {
+                if (energy <= (mode == .Moves ? Grid.moveEnergy*3 : Grid.energyThreshold) && energy > 0) {
                     Grid.timeSound?.play()
                 }
                 sc += 1

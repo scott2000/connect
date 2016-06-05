@@ -91,7 +91,6 @@ class GameViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        Grid.moveSound?.prepareToPlay()
         Grid.create(CGSize(width: 1024, height: 768))
         let g = Grid.active
         if (title == "Game" && g != nil && GameViewController.scene != g) {

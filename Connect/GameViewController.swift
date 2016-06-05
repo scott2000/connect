@@ -30,6 +30,9 @@ class GameViewController: UIViewController {
     
     @IBOutlet weak var HardButton: Button!
     
+    @IBOutlet weak var HighScoreLabel: UILabel!
+    @IBOutlet weak var LongestChainLabel: UILabel!
+    
     @IBOutlet weak var ChallengeView: SKView!
     
     @IBOutlet weak var PointsLabel: UILabel!
@@ -137,6 +140,8 @@ class GameViewController: UIViewController {
             TimedButton.enabled = true
             TimedLabel.text = "Timed"
         }
+        HighScoreLabel?.text = "High Score: \(Grid.active!.record!.points)"
+        LongestChainLabel?.text = "Longest Chain: \(Grid.active!.record!.chain)"
         MainLabel?.text = Grid.display.main
         SubLabel?.text = Grid.display.sub
         if (StandardButton != nil) {

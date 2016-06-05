@@ -1006,7 +1006,7 @@ class Grid: SKScene {
         if (mode == .Standard) {
             Grid.display.main = "You Died"
         } else if (mode == .Moves) {
-            Grid.display.main = "Round Complete"
+            Grid.display.main = "Round Over"
         } else if (mode == .Timed) {
             Grid.display.main = "Game Over"
         }

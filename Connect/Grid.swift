@@ -630,8 +630,6 @@ class Grid: SKScene {
                     clearChain()
                     if (energy <= Grid.energyThreshold && mode != .Timed && energy > 0) {
                         Grid.timeSound?.play()
-                    } else if (energy > 0) {
-                        Grid.moveSound?.play()
                     }
                     return
                 }
@@ -689,8 +687,6 @@ class Grid: SKScene {
                 }
                 if (energy <= Grid.energyThreshold && mode == .Moves && energy > 0) {
                     Grid.timeSound?.play()
-                } else if (energy > 0) {
-                    Grid.moveSound?.play()
                 }
             }
             clearChain()
@@ -702,8 +698,6 @@ class Grid: SKScene {
     }
     
     func updateChain(point: (Int, Int)) {
-        Grid.timeSound?.prepareToPlay()
-        Grid.moveSound?.prepareToPlay()
         if (check(point)) {
             if (chain == nil) {
                 chain = [(point.0,point.1,nil)]

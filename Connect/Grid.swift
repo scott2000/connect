@@ -67,6 +67,7 @@ class Grid: SKScene {
     }
     
     static func create(size: CGSize) {
+        moveSound?.volume = 0.25
         if (grids.count == 0) {
             for i in 0..<3 {
                 let m = Grid.Mode(rawValue: i)
@@ -343,6 +344,7 @@ class Grid: SKScene {
         gridPaused = true
         Grid.display.main = "Paused"
         Grid.display.sub = "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
+        Grid.moveSound?.play()
         reset()
     }
     

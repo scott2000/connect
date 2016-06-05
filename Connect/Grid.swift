@@ -8,11 +8,13 @@
 
 import Foundation
 import SpriteKit
+import AVFoundation
 
 class Grid: SKScene {
     static let basePath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
     static let lvlsys = 17
     static let maxEnergy = 144
+    static let energyThreshold = Grid.maxEnergy/4
     static let maxLevel = 21
     static let font = "Helvetica Neue"
     static let time = 8 //seconds
@@ -31,6 +33,10 @@ class Grid: SKScene {
     static var display: (main: String, sub: String) = (main: "nil", sub: "nil")
     static var newPowerup = false
     static var active: Grid?
+    static let moveSound = Grid.getSound("Move.wav")
+    static let dieSound = Grid.getSound("Die.wav")
+    static let winSound = Grid.getSound("Win.wav")
+    static let timeSound = Grid.getSound("Time.wav")
     var chain: [(Int,Int,SKShapeNode?)]?
     var chainLine: SKShapeNode?
     var falling: [SKShapeNode?] = []
@@ -51,6 +57,14 @@ class Grid: SKScene {
     var energyBar: Bar?
     var pointsSoFar = 0
     var record: Records?
+    
+    static func getSound(sound: String) -> AVAudioPlayer? {
+        do {
+            return try AVAudioPlayer(contentsOfURL: NSURL(fileURLWithPath: NSBundle.mainBundle().pathForResource(sound, ofType:nil)!))
+        } catch {
+            return nil
+        }
+    }
     
     static func create(size: CGSize) {
         if (grids.count == 0) {
@@ -328,7 +342,7 @@ class Grid: SKScene {
     func forcePause() {
         gridPaused = true
         Grid.display.main = "Paused"
-        Grid.display.sub = "Score: \(pointsSoFar)\(pointsSoFar >= record!.points ? " (High Score)" : "")"
+        Grid.display.sub = "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
         reset()
     }
     
@@ -612,6 +626,11 @@ class Grid: SKScene {
                     }
                     movePoint(from: (chain!.first!.0,chain!.first!.1), to: (chain!.last!.0,chain!.last!.1))
                     clearChain()
+                    if (energy <= Grid.energyThreshold && mode != .Timed && energy > 0) {
+                        Grid.timeSound?.play()
+                    } else if (energy > 0) {
+                        Grid.moveSound?.play()
+                    }
                     return
                 }
             } else if (chain!.count > 2 && (inf == 0 || diff != .Hard)) {
@@ -666,6 +685,11 @@ class Grid: SKScene {
                 if (Challenge.challenge != nil) {
                     Challenge.challenge!.check()
                 }
+                if (energy <= Grid.energyThreshold && mode == .Moves && energy > 0) {
+                    Grid.timeSound?.play()
+                } else if (energy > 0) {
+                    Grid.moveSound?.play()
+                }
             }
             clearChain()
         }
@@ -676,6 +700,8 @@ class Grid: SKScene {
     }
     
     func updateChain(point: (Int, Int)) {
+        Grid.timeSound?.prepareToPlay()
+        Grid.moveSound?.prepareToPlay()
         if (check(point)) {
             if (chain == nil) {
                 chain = [(point.0,point.1,nil)]
@@ -991,6 +1017,7 @@ class Grid: SKScene {
     }
     
     func levelUp() {
+        Grid.winSound?.play()
         Grid.xp = min(max(Grid.xp-Grid.maxXP(),0),288)
         Grid.level = min(Grid.level+1,Grid.maxLevel)
         Grid.newUpgrade(Grid.level)
@@ -1004,6 +1031,7 @@ class Grid: SKScene {
     }
     
     func die() {
+        Grid.dieSound?.play()
         Grid.xp = max(Grid.xp-Tile.rg((864,2048)),0)
         if (mode == .Standard) {
             Grid.display.main = "You Died"
@@ -1012,7 +1040,7 @@ class Grid: SKScene {
         } else if (mode == .Timed) {
             Grid.display.main = "Game Over"
         }
-        Grid.display.sub = "Score: \(pointsSoFar)\(pointsSoFar >= record!.points ? " (High Score)" : "")"
+        Grid.display.sub = "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
         Challenge.challenge?.points(pointsSoFar)
         record?.points(pointsSoFar)
         if (mode != .Moves) {
@@ -1131,6 +1159,9 @@ class Grid: SKScene {
             let d = NSDate().timeIntervalSince1970 - lastTime
             if (mode == .Timed && freezeMoves == 0 && started && d >= 1) {
                 energy = max(energy - Grid.maxEnergy/Grid.time, 0)
+                if (energy <= Grid.energyThreshold && energy > 0) {
+                    Grid.timeSound?.play()
+                }
                 sc += 1
                 if (d > 4) {
                     lastTime = (NSDate().timeIntervalSince1970)-3

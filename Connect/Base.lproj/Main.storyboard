@@ -319,7 +319,7 @@
                                                     <constraint firstAttribute="height" constant="84" id="X5N-7W-2Gd"/>
                                                 </constraints>
                                                 <state key="normal" image="Moves"/>
-                                                <state key="disabled" image="C"/>
+                                                <state key="disabled" image="Lock"/>
                                                 <variation key="default">
                                                     <mask key="constraints">
                                                         <exclude reference="Jdn-aB-OMl"/>
@@ -339,7 +339,7 @@
                                                     <constraint firstAttribute="height" constant="84" id="PC3-CD-Nff"/>
                                                 </constraints>
                                                 <state key="normal" image="Timed"/>
-                                                <state key="disabled" image="C"/>
+                                                <state key="disabled" image="Lock"/>
                                                 <variation key="default">
                                                     <mask key="constraints">
                                                         <exclude reference="OJU-TW-5TW"/>
@@ -490,7 +490,7 @@
     </scenes>
     <resources>
         <image name="Back" width="60" height="60"/>
-        <image name="C" width="32" height="32"/>
+        <image name="Lock" width="60" height="60"/>
         <image name="Main" width="60" height="60"/>
         <image name="Moves" width="60" height="60"/>
         <image name="Play" width="60" height="60"/>

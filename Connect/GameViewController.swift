@@ -140,8 +140,8 @@ class GameViewController: UIViewController {
             TimedButton.enabled = true
             TimedLabel.text = "Timed"
         }
-        HighScoreLabel?.text = "High Score: \(Grid.active!.record!.points)"
-        LongestChainLabel?.text = "Longest Chain: \(Grid.active!.record!.chain)"
+        HighScoreLabel?.text = "High Score: \(GameViewController.number(Grid.active!.record!.points))"
+        LongestChainLabel?.text = "Longest Chain: \(GameViewController.number(Grid.active!.record!.chain))"
         MainLabel?.text = Grid.display.main
         SubLabel?.text = Grid.display.sub
         if (StandardButton != nil) {

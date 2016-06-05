@@ -15,18 +15,24 @@ class Button: UIButton {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        print("init \(tag) (\(Button.buttons) buttons)")
         Button.buttons += 1
+        print("init \(tag) (\(Button.buttons) \(Button.buttons == 1 ? "button" : "buttons"))")
         switch (tag) {
         case 0:
-            setImage(UIImage(named: "E"), forState: .Normal)
+            Grid.create(CGSize(width: 1024, height: 768))
+            if (Grid.level >= 21) {
+                setImage(UIImage(named: "Endless"), forState: .Normal)
+            } else {
+                setImage(UIImage(named: "Play"), forState: .Normal)
+            }
         case 1:
-            setImage(UIImage(named: "R"), forState: .Normal)
+            setImage(UIImage(named: "Timed"), forState: .Normal)
         case 2:
-            setImage(UIImage(named: "T"), forState: .Normal)
+            setImage(UIImage(named: "Moves"), forState: .Normal)
         default:
             setImage(nil, forState: .Normal)
         }
+        backgroundColor = Tile.getColor(.Blue)
         layer.cornerRadius = bounds.width/2
         clipsToBounds = true
     }

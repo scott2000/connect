@@ -26,7 +26,7 @@ class Bar {
     var u: Double
     
     init(current: Int, max: Int, position: CGPoint, width: Int, color: UIColor, fontSize fs: CGFloat, text: String) {
-        scene = GameViewController.scene ?? Tile.scene!
+        scene = GameViewController.scene
         self.text = text
         self.fs = fs
         self.current = current
@@ -41,8 +41,8 @@ class Bar {
         createBar()
     }
     
-    init(current: Int, max: Int, color: UIColor, index: Int, text: String?) {
-        scene = Tile.scene!
+    init(current: Int, max: Int, color: UIColor, index: Int, text: String?, grid: Grid?) {
+        scene = grid
         self.color = color
         self.current = current
         self.max = max
@@ -51,8 +51,8 @@ class Bar {
         let c: Int = -1
         let d: Int = Tile.height
         let i2: Int = i ? c : d
-        let a = (Tile.scene! as! Grid).getPoint(0, i2)
-        let b = (Tile.scene! as! Grid).getPoint(Tile.width, i2)
+        let a = Grid.active!.getPoint(0, i2)
+        let b = Grid.active!.getPoint(Tile.width, i2)
         self.width = Int(b.x-a.x-CGFloat(Tile.size/2))
         let oy = CGFloat(Tile.spacing)/2+CGFloat((i ? (-index)-1 : index)*24)
         self.position = CGPoint(x: a.x-CGFloat(Tile.size/2), y: i ? a.y-oy : a.y+oy)
@@ -60,7 +60,7 @@ class Bar {
         separator = SKSpriteNode(color: UIColor.darkGrayColor(), size: CGSize(width: 4, height: 13))
         u = (Double(width)*Double(min(current,max))/Double(max))
         front = SKSpriteNode(color: color, size: CGSize(width: u, height: 9))
-        fs = 14+(7*CGFloat((Tile.scene! as! Grid).level-7)/CGFloat(Grid.maxLevel-7))
+        fs = 14+(7*CGFloat(Grid.level-7)/CGFloat(Grid.maxLevel-7))
         createBar()
     }
     

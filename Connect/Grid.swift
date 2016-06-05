@@ -11,72 +11,156 @@ import SpriteKit
 
 class Grid: SKScene {
     static let basePath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-    static let lvlsys = 13
+    static let lvlsys = 14
     static let maxEnergy = 144
     static let maxLevel = 21
     static let font = "Helvetica Neue"
     static let time = 8 //seconds
     static let versionPath = Grid.basePath + "/version.txt"
-    static let savePath = Grid.basePath + "/save\(String(Grid.lvlsys)).txt"
-    static let lastSavePath = Grid.basePath + "/save\(Grid.getLastVersionString()).txt"
-    var labelNode: SKLabelNode?
-    var subLabelNode: SKLabelNode?
+    static let savePath = Grid.basePath + "/\(String(Grid.lvlsys)).txt"
+    static let lastSavePath = Grid.basePath + "/\(Grid.getLastVersionString()).txt"
+    static let moveEnergy = Grid.maxEnergy/36
+    static var grids: [Grid.Mode:Grid] = [:]
+    static var level = -2
+    static var xp = 0
+    static var diffs = 1
+    static var modes = 1
+    static var points = 0
+    static var mXP = 1
+    static var lc = true
+    static var display: (main: String, sub: String) = (main: "nil", sub: "nil")
+    static var newPowerup = false
+    static var active: Grid?
     var chain: [(Int,Int,SKShapeNode?)]?
     var chainLine: SKShapeNode?
     var falling: [SKShapeNode?] = []
     var energy = maxEnergy
-    var level = -2
-    var xp = 0
     var swaps = 0
     var frames = 0
     var started = false
     var running = false
-    var diff = 0
-    var mode = 1
-    var continued = -1
-    var diffs: [String] = ["Easy"]
-    var modes: [String] = ["Standard"]
-    var diffNodes: [SKNode] = []
-    var modeNodes: [SKNode] = []
-    var continueNodes: [SKNode] = []
-    var points = 0
+    var diff: Grid.Difficulty = .Easy
+    let mode: Grid.Mode
     var lastTime = NSDate().timeIntervalSince1970
     var gridPaused = false
     var deaths = 0
-    var newPowerup = false
     var freezeMoves = 0
     var restoring = false
     var shuffling = false
-    var notifications = false
     var sc: Int = 0
-    var lc = true
-    var mXP = 1
     var xpBar: Bar?
     var energyBar: Bar?
     
-    deinit {
-        print("DEINIT GRID")
-        save()
-        Tile.removeGrid(self)
+    static func create(size: CGSize) {
+        if (grids.count == 0) {
+            for i in 0..<3 {
+                let m = Grid.Mode(rawValue: i)
+                if (m != nil) {
+                    Grid.grids[m!] = Grid(size: size, mode: m!)
+                }
+            }
+            loadAll()
+        }
     }
     
-    override init(size: CGSize) {
+    static func loadAll() {
+        let lastVersion = getLastVersion()
+        if (lastVersion < 14) {
+            if let oldData = loadData(basePath+"/save\(lastVersion).txt") {
+                level = Int(oldData[1]) ?? level
+                xp = Int(oldData[2]) ?? xp
+                points = Int(oldData[6]) ?? points
+                Challenge.load(oldData.last ?? "0")
+            }
+        } else {
+            if let data = loadData(basePath+"/\(lastVersion).txt") {
+                level = Int(data[0]) ?? level
+                xp = Int(data[1]) ?? xp
+                points = Int(data[2]) ?? points
+                Challenge.load(data[3])
+            }
+        }
+        if (lastVersion != lvlsys) {
+            let (l1, x1) = fixXP(level, xp, lastVersion)
+            level = l1
+            xp = x1
+        } else {
+            for n in grids.keys {
+                let g = grids[n]
+                g?.loadAll()
+            }
+        }
+        if (level > -2) {
+            for i in -1...level {
+                newUpgrade(i)
+            }
+        }
+    }
+    
+    static func clear() {
+        Grid.grids = [:]
+    }
+    
+    static func setMode(mode: Grid.Mode) {
+        if (active != nil) {
+            active!.saveAll()
+        }
+        active = grids[mode]
+    }
+    
+    deinit {
+        print("DEINIT GRID")
+        saveAll()
+    }
+    
+    init(size: CGSize, mode: Grid.Mode) {
         print("INIT GRID")
+        self.mode = mode
         super.init(size: size)
         backgroundColor = UIColor.whiteColor()
-        print("Save Path: \(Grid.savePath)")
-        Tile.setScene(self)
-        load()
+    }
+    
+    enum Mode: Int {
+        case Standard = 0
+        case Timed = 1
+        case Moves = 2
+    }
+    
+    enum Difficulty: Int {
+        case Easy = 0
+        case Hard = 1
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func loadAll() {
+        if let data = Grid.loadData(Grid.basePath+"/\(Grid.lvlsys)-\(mode.rawValue).txt") {
+            energy = Int(data[0]) ?? Grid.maxEnergy
+            freezeMoves = Int(data[1]) ?? 0
+            if (data.count > 2) {
+                Tile.loadData(data[2], grid: self)
+                swaps = Int(data[3]) ?? 0
+            }
+        }
+        falling = [SKShapeNode?](count: Tile.width, repeatedValue: nil)
+    }
+    
+    func saveAll() {
+        Grid.saveData([String(Grid.level),String(Grid.xp),String(Grid.points),Challenge.save()], path: Grid.basePath+"/\(Grid.lvlsys).txt")
+        if (running || gridPaused) {
+            Grid.saveData([String(energy),String(freezeMoves),Tile.getData(mode),String(swaps)], path: Grid.basePath+"/\(Grid.lvlsys)-\(mode.rawValue).txt")
+        } else {
+            Grid.saveData([String(energy),String(freezeMoves)], path: Grid.basePath+"/\(Grid.lvlsys)-\(mode.rawValue).txt")
+        }
+        Grid.saveVersion()
+    }
+    
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         for touch in touches {
             let location = touch.locationInNode(self)
-            if (findPoint(location) != nil || !running || location.y > size.height-12) {
+            if (findPoint(location) != nil || !running) {
                 move(location)
             }
         }
@@ -85,9 +169,7 @@ class Grid: SKScene {
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         for touch in touches {
             let location = touch.locationInNode(self)
-            if (location.y <= size.height-12) {
-                move(location)
-            }
+            move(location)
         }
     }
     
@@ -97,56 +179,6 @@ class Grid: SKScene {
     
     override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
         cancel()
-        if (touches != nil) {
-            for touch in touches! {
-                let location = touch.locationInNode(self)
-                if (location.y > size.height-12) {
-                    debugMenu()
-                }
-            }
-        }
-    }
-    
-    func debugPopup() {
-        let alert = UIAlertController(title: "Debug Menu", message: "Enter Command", preferredStyle: .Alert)
-        alert.addTextFieldWithConfigurationHandler({ (textField) -> Void in
-            textField.text = self.saveData().joinWithSeparator(",")
-        })
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { (action) -> Void in
-            let textField = alert.textFields![0] as UITextField
-            if (textField.text!.hasPrefix("RUN:")) {
-                let c = textField.text!.lowercaseString.componentsSeparatedByString(",")
-                switch (c[0]) {
-                case "run:save":
-                    self.save(self.saveData(), path: Grid.basePath+"/debugSave.txt")
-                case "run:restore":
-                    self.removeAllChildren()
-                    self.loadData(Grid.basePath+"/debugSave.txt")
-                case "run:shuffle":
-                    self.shuffle()
-                case "run:cooldown":
-                    Tile.cooldown = 0
-                case "run:party":
-                    Tile.cooldown = -512
-                case "run:challenge":
-                    Challenge.lastChallenge = NSDate(timeIntervalSince1970: 0)
-                    Challenge.new()
-                case "run:pause":
-                    if (c.count == 1) {
-                        self.pause()
-                    } else if (c.count == 2) {
-                        self.gridPaused = c[1].lowercaseString == "true" || c[1].lowercaseString == "yes" || c[1].lowercaseString == "1"
-                    }
-                default:
-                    print("No Debug Options Found for \"\(textField.text!)\"")
-                }
-            } else {
-                self.save(textField.text!.componentsSeparatedByString(","))
-                self.removeAllChildren()
-                self.load()
-            }
-        }))
-        GameViewController.cont!.presentViewController(alert, animated: true, completion: nil)
     }
     
     static func getLastVersion() -> Int {
@@ -165,148 +197,54 @@ class Grid: SKScene {
         }
     }
     
-    func saveData() -> [String] {
-        if (running || gridPaused) {
-            let a = ["RES",String(level),String(xp),String(energy),String(diff),String(mode)]
-            let b = [String(points),String(swaps),String(deaths)]
-            let c = [String(freezeMoves),Tile.getData(),Challenge.save()]
-            return a+b+c
-        } else {
-            let a = ["NEW",String(level),String(xp),String(diff),String(mode)]
-            let b = [String(deaths),String(points),labelNode!.text!,subLabelNode!.text!,Challenge.save()]
-            return a+b
+    static func saveVersion() {
+        do {
+            try String(Grid.lvlsys).writeToFile(Grid.versionPath, atomically: true, encoding: NSASCIIStringEncoding)
+        } catch {
+            print("Unable to save version")
         }
     }
     
-    func save() {
-        save(saveData())
-    }
-    
-    func debugMenu() {
-        debugPopup()
-    }
-    
-    func load() {
-        load(nil)
-    }
-    
-    func load(path: String?) {
-        Tile.setGrid(self)
-        Tile.resize(3, 1)
-        Tile.setColors(1)
-        Tile.powerupsUnlocked = []
-        level = -2
-        xp = 0
-        energy = Grid.maxEnergy
-        swaps = 0
-        deaths = 0
-        diff = 0
-        mode = 1
-        freezeMoves = 0
-        points = 0
-        diffs = ["Easy"]
-        modes = ["Standard"]
-        newPowerup = false
-        cancel()
-        started = false
-        gridPaused = false
-        restoring = true
-        if let a = loadAll(path) {
-            if (a.count == 10 && a[0] == "NEW") {
-                level = Int(a[1])!
-                diff = Int(a[3])!
-                mode = Int(a[4])!
-                deaths = Int(a[5])!
-                points = Int(a[6])!
-                newLabel(a[7])
-                if (level > -2) {
-                    for i in -1...level {
-                        newUpgrade(i)
-                    }
-                    newSubLabel(a[8])
-                    falling = [SKShapeNode?](count: Tile.width, repeatedValue: nil)
-                    Tile.reset()
-                    restoring = false
-                    xp = Int(a[2])!
-                    Challenge.load(a[9])
-                    reset()
-                    return
-                }
-            } else if (a.count == 12 && a[0] == "RES"){
-                level = Int(a[1])!
-                energy = Int(a[3])!
-                diff = Int(a[4])!
-                mode = Int(a[5])!
-                points = Int(a[6])!
-                swaps = Int(a[7])!
-                deaths = Int(a[8])!
-                freezeMoves = Int(a[9])!
-                if (level > -2) {
-                    for i in -1...level {
-                        newUpgrade(i)
-                    }
-                    Tile.loadData(a[10])
-                    falling = [SKShapeNode?](count: Tile.width, repeatedValue: nil)
-                    restoring = false
-                    xp = Int(a[2])!
-                    Challenge.load(a[11])
-                    forcePause()
-                    return
-                }
-            } else if (a.count == 4 && a[0] == "DEL") {
-                print("All Save Data Deleted at \(a[1]) from Level \(a[2]) with \(a[3]) Points")
-            } else if (a.count >= 2 && a[0] == "DEL") {
-                print("All Save Data Deleted: \(a.joinWithSeparator(","))")
-            } else if (a.count == 1 && a[0] == "DEL") {
-                print("All Save Data Deleted")
-            } else {
-                print("Incorrect Save Format (\(a.count))")
-            }
-        } else {
-            print("Unable to Load Data")
-        }
-        falling = [SKShapeNode?](count: Tile.width, repeatedValue: nil)
-        restoring = false
-        newLabel("Tutorial 1")
-        newSubLabel("Connections")
-        reset()
-    }
-    
-    func save(array: [String]) {
-        save(array, path: Grid.savePath)
-    }
-    
-    func save(array: [String], path: String) {
+    static func saveData(array: [String], path: String) {
         let j = array.joinWithSeparator(",")
-        print("Save: \(j)")
+        print("Save: \(j) at \(path.stringByReplacingOccurrencesOfString(Grid.basePath+"/", withString: "\""))\"")
         do {
             try j.writeToFile(path, atomically: true, encoding: NSASCIIStringEncoding)
-            try String(Grid.lvlsys).writeToFile(Grid.versionPath, atomically: true, encoding: NSASCIIStringEncoding)
         } catch {
             print("Unable to write data")
         }
     }
     
+    static func loadData(path: String) -> [String]? {
+        do {
+            let c = try String(contentsOfFile: path, encoding: NSASCIIStringEncoding)
+            print("Load: \(c)")
+            return c.componentsSeparatedByString(",")
+        } catch {
+            return nil
+        }
+    }
+    
     func pause() {
-        save()
+        saveAll()
         if (running) {
             forcePause()
         }
     }
     
-    func maxXP() -> Int {
-        return maxXP(level, Grid.lvlsys, lc: lc, u: true)
+    static func maxXP() -> Int {
+        return Grid.maxXP(Grid.level, Grid.lvlsys, lc: lc, u: true)
     }
     
-    func maxXP(level: Int) -> Int {
+    static func maxXP(level: Int) -> Int {
         return maxXP(level, Grid.lvlsys, lc: true, u: false)
     }
     
-    func maxXP(level: Int, _ lvlsys: Int) -> Int {
+    static func maxXP(level: Int, _ lvlsys: Int) -> Int {
         return maxXP(level, lvlsys, lc: true, u: false)
     }
     
-    func maxXP(level: Int, _ lvlsys: Int, lc: Bool, u: Bool) -> Int {
+    static func maxXP(level: Int, _ lvlsys: Int, lc: Bool, u: Bool) -> Int {
         if (!lc) {
             return mXP
         }
@@ -337,7 +275,7 @@ class Grid: SKScene {
         return r
     }
     
-    func fixXP(lvl: Int, _ exp: Int, _ l1: Int) -> (Int, Int) {
+    static func fixXP(lvl: Int, _ exp: Int, _ l1: Int) -> (Int, Int) {
         var level = lvl
         var xp = exp
         var i = -2
@@ -361,82 +299,11 @@ class Grid: SKScene {
         return (level, xp)
     }
     
-    func loadAll(path: String?) -> [String]? {
-        if (path == nil || path == Grid.basePath) {
-            return loadAll()
-        } else {
-            return loadData(path!)
-        }
-    }
-    
-    func loadAll() -> [String]? {
-        if (Grid.lastSavePath == Grid.savePath) {
-            return loadData(Grid.savePath)
-        }
-        if var last = loadData(Grid.lastSavePath) {
-            if (last.count >= 8 && (last[0] == "NEW" || last[0] == "RES")) {
-                let (level, xp) = fixXP(Int(last[1])!,Int(last[2])!,Grid.getLastVersion())
-                let p = last[6]
-                let diff = level - Int(last[1])!
-                last.removeAll(keepCapacity: true)
-                last.append("NEW")
-                last.append(String(level))
-                last.append(String(xp))
-                last.append("0")
-                last.append("1")
-                last.append("0")
-                last.append(p)
-                last.append("Level \(level)\((level == Grid.maxLevel ? " (MAX)" : ""))")
-                last.append("Update Successful")
-                last.append("0")
-                print("Updated Format (\(diff) levels): \(last.joinWithSeparator(","))")
-                return last
-            }
-        }
-        return nil
-    }
-    
-    func loadData(path: String) -> [String]? {
-        do {
-            let c = try String(contentsOfFile: path, encoding: NSASCIIStringEncoding)
-            print("Load: \(c)")
-            return c.componentsSeparatedByString(",")
-        } catch {
-            return nil
-        }
-    }
-    
     func forcePause() {
         gridPaused = true
-        newLabel("Paused")
-        newSubLabel("Points: \(points)")
+        Grid.display.main = "Paused"
+        Grid.display.sub = "Points: \(Grid.points)"
         reset()
-    }
-    
-    func newLabel(text: String) {
-        if (labelNode != nil) {
-            labelNode!.removeFromParent()
-        }
-        labelNode = SKLabelNode(fontNamed: Grid.font)
-        labelNode!.position = getPoint(0, 5, gridSize: (1,7), tileSize: (36,36), spacing: (0,0), offset: 6)
-        labelNode!.fontSize = 36
-        labelNode!.fontColor = UIColor.blackColor()
-        labelNode!.text = text
-        labelNode!.zPosition = -143
-        addChild(labelNode!)
-    }
-    
-    func newSubLabel(text: String) {
-        if (subLabelNode != nil) {
-            subLabelNode!.removeFromParent()
-        }
-        subLabelNode = SKLabelNode(fontNamed: Grid.font)
-        subLabelNode!.position = getPoint(0, 4, gridSize: (1,7), tileSize: (36,36), spacing: (0,0), offset: 0)
-        subLabelNode!.fontSize = 18
-        subLabelNode!.fontColor = UIColor.blackColor()
-        subLabelNode!.text = text
-        subLabelNode!.zPosition = -143
-        addChild(subLabelNode!)
     }
     
     static func getColor(color: Int) -> UIColor {
@@ -459,8 +326,8 @@ class Grid: SKScene {
             for i in -1...1 {
                 for o in -1...1 {
                     if (x+i >= 0 && x+i < Tile.width && y+o >= 0 && y+o < Tile.height && !checkChain((x+i,y+o)) && Grid.nextTo(a: (x,y),b: (x+i,y+o))) {
-                        let nn = Tile.tiles[x+i][y+o] != nil && Tile.tiles[chain!.first!.0][chain!.first!.1] != nil
-                        if (nn && Tile.tiles[x+i][y+o]!.color == Tile.tiles[chain!.first!.0][chain!.first!.1]!.color) {
+                        let nn = Tile.tiles[mode.rawValue]![x+i][y+o] != nil && Tile.tiles[mode.rawValue]![chain!.first!.0][chain!.first!.1] != nil
+                        if (nn && Tile.tiles[mode.rawValue]![x+i][y+o]!.color == Tile.tiles[mode.rawValue]![chain!.first!.0][chain!.first!.1]!.color) {
                             v += 1
                         }
                     }
@@ -471,7 +338,7 @@ class Grid: SKScene {
     }
     
     func check(point: (Int,Int)) -> Bool {
-        return !Tile.tiles[point.0][point.1]!.move
+        return !Tile.tiles[mode.rawValue]![point.0][point.1]!.move
     }
     
     static func nextTo(a a: (Int,Int), b: (Int,Int)) -> Bool {
@@ -501,10 +368,6 @@ class Grid: SKScene {
     
     func move(point: CGPoint) {
         if (running) {
-            if (point.y > size.height-12) {
-                pause()
-                return
-            }
             if (started == false) {
                 lastTime = NSDate().timeIntervalSince1970
                 started = true
@@ -521,8 +384,8 @@ class Grid: SKScene {
                     chainLine!.removeFromParent()
                     chainLine = nil
                 }
-                let first = Tile.tiles[chain!.first!.0][chain!.first!.1]!
-                let old = Tile.tiles[chain!.last!.0][chain!.last!.1]!
+                let first = Tile.tiles[mode.rawValue]![chain!.first!.0][chain!.first!.1]!
+                let old = Tile.tiles[mode.rawValue]![chain!.last!.0][chain!.last!.1]!
                 if (first.color == old.color || first.color == .None || old.color == .None) {
                     chainLine = drawLine(from: old.node!.position, to: point, color: chain!.count == 1 || first.color != old.color ? UIColor.blackColor() : Tile.getColor(first.color), z: -13)
                 }
@@ -536,9 +399,9 @@ class Grid: SKScene {
                 if (line != nil) {
                     line!.removeFromParent()
                 }
-                if (Tile.tiles[x][y] != nil && Tile.tiles[x][y]!.type == .Wildcard) {
-                    Tile.tiles[x][y]!.color = .None
-                    Tile.tiles[x][y]!.node!.fillColor = UIColor.whiteColor()
+                if (Tile.tiles[mode.rawValue]![x][y] != nil && Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard) {
+                    Tile.tiles[mode.rawValue]![x][y]!.color = .None
+                    Tile.tiles[mode.rawValue]![x][y]!.node!.fillColor = UIColor.whiteColor()
                 }
             }
         }
@@ -551,16 +414,18 @@ class Grid: SKScene {
     }
     
     func getDiff() -> Int {
-        return max(0,diff)*2+max(0,mode)*3+1
+        return max(0,diff.rawValue)*2+max(0,mode == .Timed ? 3 : 1)
     }
     
-    func runPowerup(type: Tile.SpecialType, color: Tile.Color, _ xb: Int, _ yb: Int) {
+    func runPowerup(type1: String, color color1: Int, _ xb: Int, _ yb: Int) {
+        let type = Tile.SpecialType(rawValue: type1)!
+        let color = Tile.Color(rawValue: color1)!
         switch (type) {
         case .Shuffle:
             shuffle()
             let i = 48
-            xp += i
-            points += i
+            Grid.xp += i
+            Grid.points += i
             if (Challenge.challenge != nil) {
                 Challenge.challenge!.points(i)
             }
@@ -568,136 +433,140 @@ class Grid: SKScene {
             var pus: [(Tile.SpecialType, Tile.Color, Int, Int)] = []
             for x in max(xb-3,0)..<min(xb+3,Tile.width) {
                 for y in max(yb-3,0)..<min(yb+3,Tile.height) {
-                    if (Tile.tiles[x][y] != nil && distance(from: CGPoint(x: x, y: y), to: CGPoint(x: xb, y: yb)) <= 2.75) {
-                        let i = Tile.tiles[x][y]!.type == .Wildcard ? 36 : 9
-                        xp += i
-                        points += i
+                    if (Tile.tiles[mode.rawValue]![x][y] != nil && distance(from: CGPoint(x: x, y: y), to: CGPoint(x: xb, y: yb)) <= 2.75) {
+                        let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 36 : 9
+                        Grid.xp += i
+                        Grid.points += i
                         if (Challenge.challenge != nil) {
                             Challenge.challenge!.points(i)
                         }
-                        let t = Tile.tiles[x][y]!.type
+                        let t = Tile.tiles[mode.rawValue]![x][y]!.type
                         if (Challenge.challenge != nil) {
-                            Challenge.challenge!.clear(Tile.tiles[x][y]!.color, type: t)
+                            Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
                         }
                         if (t != .Normal && t != .Wildcard) {
-                            xp += 18
-                            points += 18
+                            Grid.xp += 18
+                            Grid.points += 18
                             if (Challenge.challenge != nil) {
                                 Challenge.challenge!.points(18)
                             }
-                            pus.append((t,Tile.tiles[x][y]!.color, x, y))
+                            pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                         }
-                        Tile.tiles[x][y]!.node!.removeFromParent()
-                        Tile.tiles[x][y] = nil
+                        Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
+                        Tile.tiles[mode.rawValue]![x][y] = nil
                     }
                 }
             }
             for (a, b, x, y) in pus {
-                runPowerup(a, color: b, x, y)
+                runPowerup(a.rawValue, color: b.rawValue, x, y)
             }
         case .ClearColor:
             var pus: [(Tile.SpecialType, Tile.Color, Int, Int)] = []
             for x in 0..<Tile.width {
                 for y in 0..<Tile.height {
-                    if (Tile.tiles[x][y] != nil && Tile.tiles[x][y]!.color == color && Tile.tiles[x][y]!.type != .Wildcard) {
+                    if (Tile.tiles[mode.rawValue]![x][y] != nil && Tile.tiles[mode.rawValue]![x][y]!.color == color && Tile.tiles[mode.rawValue]![x][y]!.type != .Wildcard) {
                         let i = 9
-                        xp += 9
-                        points += 9
+                        Grid.xp += 9
+                        Grid.points += 9
                         if (Challenge.challenge != nil) {
                             Challenge.challenge!.points(i)
                         }
-                        let t = Tile.tiles[x][y]!.type
+                        let t = Tile.tiles[mode.rawValue]![x][y]!.type
                         if (Challenge.challenge != nil) {
-                            Challenge.challenge!.clear(Tile.tiles[x][y]!.color, type: t)
+                            Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
                         }
                         if (t != .Normal && t != .Wildcard && t != .ClearColor) {
-                            xp += 18
-                            points += 18
+                            Grid.xp += 18
+                            Grid.points += 18
                             if (Challenge.challenge != nil) {
                                 Challenge.challenge!.points(18)
                             }
-                            pus.append((t,Tile.tiles[x][y]!.color, x, y))
+                            pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                         }
-                        Tile.tiles[x][y]!.node!.removeFromParent()
-                        Tile.tiles[x][y] = nil
+                        Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
+                        Tile.tiles[mode.rawValue]![x][y] = nil
                     }
                 }
             }
             for (a, b, x, y) in pus {
-                runPowerup(a, color: b, x, y)
+                runPowerup(a.rawValue, color: b.rawValue, x, y)
             }
         case .Star:
             var pus: [(Tile.SpecialType, Tile.Color, Int, Int)] = []
             let x = xb
             for y in 0..<Tile.height {
-                if (Tile.tiles[x][y] != nil) {
-                    let i = Tile.tiles[x][y]!.type == .Wildcard ? 36 : 9
-                    xp += i
-                    points += i
+                if (Tile.tiles[mode.rawValue]![x][y] != nil) {
+                    let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 36 : 9
+                    Grid.xp += i
+                    Grid.points += i
                     if (Challenge.challenge != nil) {
                         Challenge.challenge!.points(i)
                     }
-                    let t = Tile.tiles[x][y]!.type
+                    let t = Tile.tiles[mode.rawValue]![x][y]!.type
                     if (Challenge.challenge != nil) {
-                        Challenge.challenge!.clear(Tile.tiles[x][y]!.color, type: t)
+                        Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
                     }
                     if (t != .Normal && t != .Wildcard) {
-                        xp += 18
-                        points += 18
+                        Grid.xp += 18
+                        Grid.points += 18
                         if (Challenge.challenge != nil) {
                             Challenge.challenge!.points(18)
                         }
-                        pus.append((t,Tile.tiles[x][y]!.color, x, y))
+                        pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                     }
-                    Tile.tiles[x][y]!.node!.removeFromParent()
-                    Tile.tiles[x][y] = nil
+                    Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
+                    Tile.tiles[mode.rawValue]![x][y] = nil
                 }
             }
             let y = yb
             for x in 0..<Tile.width {
-                if (Tile.tiles[x][y] != nil) {
-                    let i = Tile.tiles[x][y]!.type == .Wildcard ? 36 : 9
-                    xp += i
-                    points += i
+                if (Tile.tiles[mode.rawValue]![x][y] != nil) {
+                    let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 36 : 9
+                    Grid.xp += i
+                    Grid.points += i
                     if (Challenge.challenge != nil) {
                         Challenge.challenge!.points(i)
                     }
-                    let t = Tile.tiles[x][y]!.type
+                    let t = Tile.tiles[mode.rawValue]![x][y]!.type
                     if (Challenge.challenge != nil) {
-                        Challenge.challenge!.clear(Tile.tiles[x][y]!.color, type: t)
+                        Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
                     }
                     if (t != .Normal && t != .Wildcard) {
-                        xp += 18
-                        points += 18
+                        Grid.xp += 18
+                        Grid.points += 18
                         if (Challenge.challenge != nil) {
                             Challenge.challenge!.points(18)
                         }
-                        pus.append((t,Tile.tiles[x][y]!.color, x, y))
+                        pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                     }
-                    Tile.tiles[x][y]!.node!.removeFromParent()
-                    Tile.tiles[x][y] = nil
+                    Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
+                    Tile.tiles[mode.rawValue]![x][y] = nil
                 }
             }
             for (a, b, x, y) in pus {
-                runPowerup(a, color: b, x, y)
+                runPowerup(a.rawValue, color: b.rawValue, x, y)
             }
         case .EnergyBoost:
-            freezeMoves += 3
-            energy = Grid.maxEnergy
+            if (mode == .Moves) {
+                freezeMoves += 4
+            } else {
+                freezeMoves += 3
+                energy = Grid.maxEnergy
+            }
         case .WildcardBomb:
             for x in 0..<Tile.width {
                 for y in 0..<Tile.height {
-                    if (Tile.tiles[x][y] != nil && Tile.tiles[x][y]!.type == .Normal && Int(arc4random_uniform(6)) == 0) {
+                    if (Tile.tiles[mode.rawValue]![x][y] != nil && Tile.tiles[mode.rawValue]![x][y]!.type == .Normal && Int(arc4random_uniform(11)) <= 1) {
                         let i = 6
-                        xp += i
-                        points += i
+                        Grid.xp += i
+                        Grid.points += i
                         if (Challenge.challenge != nil) {
                             Challenge.challenge!.points(i)
                         }
-                        Tile.tiles[x][y]!.type = .Wildcard
-                        Tile.tiles[x][y]!.color = .None
-                        Tile.tiles[x][y]!.node!.fillColor = UIColor.whiteColor()
-                        Tile.tiles[x][y]!.node!.strokeColor = UIColor.blackColor()
+                        Tile.tiles[mode.rawValue]![x][y]!.type = .Wildcard
+                        Tile.tiles[mode.rawValue]![x][y]!.color = .None
+                        Tile.tiles[mode.rawValue]![x][y]!.node!.fillColor = UIColor.whiteColor()
+                        Tile.tiles[mode.rawValue]![x][y]!.node!.strokeColor = UIColor.blackColor()
                     }
                 }
             }
@@ -711,7 +580,7 @@ class Grid: SKScene {
         if (chain != nil) {
             Tile.save += 1
             if (Tile.save >= 6) {
-                save()
+                saveAll()
             }
             var t = chain!.count
             let inf = checkForAll()
@@ -719,14 +588,18 @@ class Grid: SKScene {
                 t += t-3
             }
             if (chain!.count == 2) {
-                let a = Tile.tiles[chain![0].0][chain![0].1]!
-                let b = Tile.tiles[chain![1].0][chain![1].1]!
+                let a = Tile.tiles[mode.rawValue]![chain![0].0][chain![0].1]!
+                let b = Tile.tiles[mode.rawValue]![chain![1].0][chain![1].1]!
                 if (a.color != b.color || a.type != b.type) {
                     if (Challenge.challenge != nil) {
                         Challenge.challenge!.swap()
                     }
                     if (freezeMoves == 0) {
-                        energy = max(energy-Int(exp2(Double(min(swaps+1,6)))*((mode == 2) ? 4 : 6)),0)
+                        if (mode != .Moves) {
+                            energy = max(energy-(6*((mode == .Timed) ? 4 : 6)),0)
+                        } else {
+                            energy = max(energy-Grid.moveEnergy,0)
+                        }
                         swaps += 1
                     } else {
                         freezeMoves -= 1
@@ -735,17 +608,21 @@ class Grid: SKScene {
                     clearChain()
                     return
                 }
-            } else if (chain!.count > 2 && (inf == 0 || diff != 1)) {
-                let t2 = (inf+Int(exp2(Double(inf)))-t)/(max(1,mode)*2)
-                let t3 = Int(exp2(Double(min(t-2,10))))*(max(1,mode)*3)
-                if (diff != 1 || inf == 0) {
-                    energy = min((energy+t3*2),Grid.maxEnergy)
-                } else {
-                    energy = min(max(energy+t3-t2,0),Grid.maxEnergy)
+            } else if (chain!.count > 2 && (inf == 0 || diff != .Hard)) {
+                let t2 = (inf+Int(exp2(Double(inf)))-t)/(max(1,mode.rawValue)*2)
+                let t3 = Int(exp2(Double(min(t-2,10))))*(max(1,mode.rawValue)*3)
+                if (mode != .Moves) {
+                    if (diff != .Hard || inf == 0) {
+                        energy = min((energy+t3*2),Grid.maxEnergy)
+                    } else {
+                        energy = min(max(energy+t3-t2,0),Grid.maxEnergy)
+                    }
                 }
-                let increase = max(min(max(Int(exp2(Double(min(t-2,4))))-(swaps*2),0)+t-t2,maxXP()),0)*getDiff()
-                if (mode == 2 && freezeMoves > 0) {
+                let increase = max(min(max(Int(exp2(Double(min(t-2,4))))-(swaps*2),0)+t-t2,Grid.maxXP()),0)*getDiff()
+                if (mode != .Standard && freezeMoves > 0) {
                     freezeMoves -= 1
+                } else if (mode == .Moves) {
+                    energy = max(energy-Grid.moveEnergy,0)
                 }
                 if (Challenge.challenge != nil) {
                     Challenge.challenge!.chain(chain!.count)
@@ -753,32 +630,32 @@ class Grid: SKScene {
                 if (Challenge.challenge != nil) {
                     Challenge.challenge!.points(increase)
                 }
-                xp += increase
-                points += increase
+                Grid.xp += increase
+                Grid.points += increase
                 swaps = max(swaps-(t/3),0)
                 var pus: [(Tile.SpecialType, Tile.Color, Int, Int)] = []
                 for (x, y, _) in chain! {
-                    if (Tile.tiles[x][y] != nil) {
-                        let t = Tile.tiles[x][y]!.type
-                        let c = Tile.tiles[x][y]!.color
-                        if (Tile.tiles[x][y]!.type == .Wildcard) {
-                            xp += 24
-                            points += 24
+                    if (Tile.tiles[mode.rawValue]![x][y] != nil) {
+                        let t = Tile.tiles[mode.rawValue]![x][y]!.type
+                        let c = Tile.tiles[mode.rawValue]![x][y]!.color
+                        if (Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard) {
+                            Grid.xp += 24
+                            Grid.points += 24
                         }
-                        Tile.tiles[x][y]!.node!.removeFromParent()
-                        Tile.tiles[x][y] = nil
+                        Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
+                        Tile.tiles[mode.rawValue]![x][y] = nil
                         if (Challenge.challenge != nil) {
                             Challenge.challenge!.clear(c, type: t)
                         }
                         if (t != .Wildcard && t != .Normal) {
                             pus.append((t,c, x, y))
-                            xp += 12
-                            points += 12
+                            Grid.xp += 12
+                            Grid.points += 12
                         }
                     }
                 }
                 for (a,b,x,y) in pus {
-                    runPowerup(a, color: b, x, y)
+                    runPowerup(a.rawValue, color: b.rawValue, x, y)
                 }
                 if (Challenge.challenge != nil) {
                     Challenge.challenge!.check()
@@ -804,15 +681,15 @@ class Grid: SKScene {
                     if let line = chain!.last!.2 {
                         line.removeFromParent()
                     }
-                    if (Tile.tiles[chain!.last!.0][chain!.last!.1]!.type == .Wildcard) {
-                        Tile.tiles[chain!.last!.0][chain!.last!.1]!.color = .None
-                        Tile.tiles[chain!.last!.0][chain!.last!.1]!.node!.fillColor = UIColor.whiteColor()
+                    if (Tile.tiles[mode.rawValue]![chain!.last!.0][chain!.last!.1]!.type == .Wildcard) {
+                        Tile.tiles[mode.rawValue]![chain!.last!.0][chain!.last!.1]!.color = .None
+                        Tile.tiles[mode.rawValue]![chain!.last!.0][chain!.last!.1]!.node!.fillColor = UIColor.whiteColor()
                     }
                     chain!.removeLast()
                     if (chain!.count == 1) {
-                        if (Tile.tiles[chain!.first!.0][chain!.first!.1]!.type == .Wildcard) {
-                            Tile.tiles[chain!.first!.0][chain!.first!.1]!.color = .None
-                            Tile.tiles[chain!.first!.0][chain!.first!.1]!.node!.fillColor = UIColor.whiteColor()
+                        if (Tile.tiles[mode.rawValue]![chain!.first!.0][chain!.first!.1]!.type == .Wildcard) {
+                            Tile.tiles[mode.rawValue]![chain!.first!.0][chain!.first!.1]!.color = .None
+                            Tile.tiles[mode.rawValue]![chain!.first!.0][chain!.first!.1]!.node!.fillColor = UIColor.whiteColor()
                         }
                     }
                     return
@@ -821,11 +698,11 @@ class Grid: SKScene {
                     return
                 }
                 if ((checkColor([chain!.first!.0,chain!.last!.0,point.0],[chain!.first!.1,chain!.last!.1,point.1])) || (chain!.count == 1)) {
-                    let first = Tile.tiles[chain!.first!.0][chain!.first!.1]!
-                    let old = Tile.tiles[chain!.last!.0][chain!.last!.1]!
-                    let new = Tile.tiles[point.0][point.1]!
+                    let first = Tile.tiles[mode.rawValue]![chain!.first!.0][chain!.first!.1]!
+                    let old = Tile.tiles[mode.rawValue]![chain!.last!.0][chain!.last!.1]!
+                    let new = Tile.tiles[mode.rawValue]![point.0][point.1]!
                     let p = old.node!.position
-                    let p2 = Tile.tiles[point.0][point.1]!.node!.position
+                    let p2 = Tile.tiles[mode.rawValue]![point.0][point.1]!.node!.position
                     let color = first.color == new.color ? Tile.getColor(first.color) : UIColor.blackColor()
                     chain!.append((point.0,point.1,drawLine(from: p, to: p2, color: color, z: -12)))
                 }
@@ -848,7 +725,7 @@ class Grid: SKScene {
     func findPoint(location: CGPoint) -> (Int, Int)? {
         var x = 0
         var y = 0
-        for o in Tile.tiles {
+        for o in Tile.tiles[mode.rawValue]! {
             y = 0
             for i in o {
                 if (i != nil) {
@@ -870,10 +747,10 @@ class Grid: SKScene {
     }
     
     func movePoint(from source: (Int,Int), to destination: (Int,Int), update shouldUpdate: Bool) {
-        if (Tile.tiles[source.0][source.1] == nil || Tile.tiles[destination.0][destination.1] == nil || check(source) && check(destination)) {
-            let transition = Tile.tiles[destination.0][destination.1]
-            Tile.tiles[destination.0][destination.1] = Tile.tiles[source.0][source.1]
-            Tile.tiles[source.0][source.1] = transition
+        if (Tile.tiles[mode.rawValue]![source.0][source.1] == nil || Tile.tiles[mode.rawValue]![destination.0][destination.1] == nil || check(source) && check(destination)) {
+            let transition = Tile.tiles[mode.rawValue]![destination.0][destination.1]
+            Tile.tiles[mode.rawValue]![destination.0][destination.1] = Tile.tiles[mode.rawValue]![source.0][source.1]
+            Tile.tiles[mode.rawValue]![source.0][source.1] = transition
             if (shouldUpdate) {
                 update()
             }
@@ -992,25 +869,25 @@ class Grid: SKScene {
     func checkColor(x: [Int], _ y: [Int]) -> Bool {
         var color = Tile.Color.None
         for i in 0..<min(x.count, y.count) {
-            if (Tile.tiles[x[i]][y[i]] != nil) {
+            if (Tile.tiles[mode.rawValue]![x[i]][y[i]] != nil) {
                 if (color == .None) {
-                    color = Tile.tiles[x[i]][y[i]]!.color
-                } else if (color != Tile.tiles[x[i]][y[i]]!.color && Tile.tiles[x[i]][y[i]]!.color != .None) {
+                    color = Tile.tiles[mode.rawValue]![x[i]][y[i]]!.color
+                } else if (color != Tile.tiles[mode.rawValue]![x[i]][y[i]]!.color && Tile.tiles[mode.rawValue]![x[i]][y[i]]!.color != .None) {
                     return false
                 }
             }
         }
         if (chain!.count > 1 && color != .None) {
             for i in 0..<min(x.count, y.count) {
-                if (Tile.tiles[x[i]][y[i]]!.type == .Wildcard) {
-                    Tile.tiles[x[i]][y[i]]!.node!.fillColor = Tile.getColor(color)
-                    Tile.tiles[x[i]][y[i]]!.color = color
+                if (Tile.tiles[mode.rawValue]![x[i]][y[i]]!.type == .Wildcard) {
+                    Tile.tiles[mode.rawValue]![x[i]][y[i]]!.node!.fillColor = Tile.getColor(color)
+                    Tile.tiles[mode.rawValue]![x[i]][y[i]]!.color = color
                 }
             }
             for (x, y, l) in chain! {
-                if (Tile.tiles[x][y]!.type == .Wildcard) {
-                    Tile.tiles[x][y]!.node!.fillColor = Tile.getColor(color)
-                    Tile.tiles[x][y]!.color = color
+                if (Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard) {
+                    Tile.tiles[mode.rawValue]![x][y]!.node!.fillColor = Tile.getColor(color)
+                    Tile.tiles[mode.rawValue]![x][y]!.color = color
                 }
                 if (l != nil) {
                     l!.strokeColor = Tile.getColor(color)
@@ -1020,117 +897,117 @@ class Grid: SKScene {
         return true
     }
     
-    func newUpgrade(level: Int) {
+    static func newUpgrade(level: Int) {
         lc = true
         switch (level) {
         case -1:
-            xp = 0
+            Grid.xp = 0
             Tile.setColors(2)
             Tile.resize(3,2)
-            newSubLabel("Swapping")
+            display.sub = "Swapping"
         case 0:
-            xp = 0
+            Grid.xp = 0
             Tile.setColors(1)
             Tile.resize(3,1)
-            newSubLabel("Wildcards")
+            display.sub = "Wildcards"
         case 1:
             Tile.setColors(3)
             Tile.resize(4,4)
-            newSubLabel("Good Luck")
+            display.sub = "Good Luck"
         case 2:
-            diffs.append("Hard")
-            newSubLabel("Hard Difficulty Unlocked")
+            diffs = 2
+            display.sub = "Hard Difficulty Unlocked"
         case 3:
             Tile.resize(4,5)
-            newSubLabel("Bigger Grid Unlocked")
+            display.sub = "Bigger Grid Unlocked"
         case 4:
-            modes.append("Timed")
-            newSubLabel("Timed Mode Unlocked")
+            modes = 2
+            display.sub = "Timed Mode Unlocked"
         case 5:
             Tile.setColors(4)
-            newSubLabel("New Color Unlocked")
+            display.sub = "New Color Unlocked"
         case 6:
             Tile.unlockPowerup(.Shuffle)
             newPowerup = true
-            newSubLabel("Shuffle Power-Up Unlocked")
+            display.sub = "Shuffle Power-Up Unlocked"
         case 7:
-            newSubLabel("Challenges Unlocked")
+            display.sub = "Challenges Unlocked"
         case 8:
             Tile.resize(5,6)
-            newSubLabel("Bigger Grid Unlocked")
+            display.sub = "Bigger Grid Unlocked"
         case 9:
             Tile.unlockPowerup(.Explode)
             newPowerup = true
-            newSubLabel("Explode Power-Up Unlocked")
+            display.sub = "Explode Power-Up Unlocked"
         case 10:
             Tile.resize(6,7)
-            newSubLabel("Bigger Grid Unlocked")
+            display.sub = "Bigger Grid Unlocked"
         case 11:
-            Tile.setColors(5)
-            newSubLabel("New Color Unlocked")
+            modes = 3
+            display.sub = "Moves Mode Unlocked"
         case 12:
             Tile.unlockPowerup(.ClearColor)
             newPowerup = true
-            newSubLabel("Clear Power-Up Unlocked")
+            display.sub = "Clear Power-Up Unlocked"
         case 13:
             Tile.resize(6,8)
-            newSubLabel("Bigger Grid Unlocked")
+            display.sub = "Bigger Grid Unlocked"
         case 14:
+            Tile.setColors(5)
+            display.sub = "New Color Unlocked"
+        case 15:
             Tile.unlockPowerup(.Star)
             newPowerup = true
-            newSubLabel("Star Power-Up Unlocked")
-        case 15:
-            Tile.setColors(6)
-            newSubLabel("New Color Unlocked")
+            display.sub = "Star Power-Up Unlocked"
         case 16:
             Tile.resize(6,9)
-            newSubLabel("Bigger Grid Unlocked")
+            display.sub = "Bigger Grid Unlocked"
         case 17:
+            Tile.setColors(6)
+            display.sub = "New Color Unlocked"
+        case 18:
             Tile.unlockPowerup(.EnergyBoost)
             newPowerup = true
-            newSubLabel("Energy Boost Unlocked")
-        case 18:
-            Tile.resize(7,10)
-            newSubLabel("Bigger Grid Unlocked")
+            display.sub = "Energy Boost Unlocked"
         case 19:
+            Tile.resize(7,9)
+            display.sub = "Bigger Grid Unlocked"
+        case 20:
             Tile.unlockPowerup(.WildcardBomb)
             newPowerup = true
-            newSubLabel("Wildcard Bomb Unlocked")
-        case 20:
-            Tile.resize(7,11)
-            newSubLabel("Biggest Grid Unlocked")
-        case Grid.maxLevel:
-            modes = ["Casual", "Standard", "Timed"]
-            newSubLabel("Casual Mode Unlocked")
+            display.sub = "Wildcard Bomb Unlocked"
+        case 21:
+            Tile.resize(7,10)
+            display.sub = "Biggest Grid Unlocked"
         default:
             break
         }
     }
     
     func levelUp() {
-        xp = min(max(xp-maxXP(),0),288)
-        level = min(level+1,Grid.maxLevel)
-        newUpgrade(level)
+        Grid.xp = min(max(Grid.xp-Grid.maxXP(),0),288)
+        Grid.level = min(Grid.level+1,Grid.maxLevel)
+        Grid.newUpgrade(Grid.level)
         deaths = 0
-        if (level <= 0) {
-            newLabel("Tutorial \(level+3)")
+        if (Grid.level <= 0) {
+            Grid.display.main = "Tutorial \(Grid.level+3)"
         } else {
-            newLabel(level == Grid.maxLevel ? "Level \(level) (MAX)" : "Level \(level)")
+            Grid.display.main = Grid.level == Grid.maxLevel ? "Level \(Grid.level) (MAX)" : "Level \(Grid.level)"
         }
         reset()
-        save()
+        saveAll()
     }
     
     func die() {
-        xp = max(xp-Int(exp2(Double(deaths)))*864,0)
-        newLabel("You Died")
-        newSubLabel("Points: \(points)")
+        Grid.xp = max(Grid.xp-Tile.rg((864,2048)),0)
+        Grid.display.main = "You Died"
+        Grid.display.sub = "Points: \(Grid.points)"
         deaths += 1
         if (Challenge.challenge != nil) {
             Challenge.challenge!.die()
         }
         reset()
-        save()
+        saveAll()
     }
     
     func reset() {
@@ -1141,89 +1018,66 @@ class Grid: SKScene {
         swaps = 0
         if (!gridPaused) {
             falling = [SKShapeNode?](count: Tile.width, repeatedValue: nil)
-            for i in Tile.tiles {
+            for i in Tile.tiles[mode.rawValue]! {
                 for o in i {
                     if (o != nil) {
                         o!.node!.removeFromParent()
                     }
                 }
             }
+            xpBar?.clearBar()
+            energyBar?.clearBar()
+            xpBar = nil
+            energyBar = nil
         } else {
-            for i in Tile.tiles {
-                for o in i {
-                    if (o != nil) {
-                        o!.node!.hidden = true
-                    }
-                }
-            }
+            GameViewController.cont?.performSegueWithIdentifier("pause", sender: nil)
         }
-        continued = -1
-        xpBar?.clearBar()
-        energyBar?.clearBar()
-        xpBar = nil
-        energyBar = nil
         Challenge.challenge?.check()
         clearChain()
         frames = 0
-        lc = true
+        Grid.lc = true
     }
     
     func restore() {
-        if (level >= 7 && !notifications) {
+        if (Grid.level >= 7) {
             UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert, categories: nil))
-        }
-        continued = -1
-        if (labelNode != nil) {
-            labelNode!.removeFromParent()
-        }
-        if (subLabelNode != nil) {
-            subLabelNode!.removeFromParent()
         }
         lastTime = NSDate().timeIntervalSince1970
         running = true
         if (!gridPaused) {
             started = false
-            Tile.reset()
+            Tile.reset(mode)
             energy = Grid.maxEnergy
-            if (level == 0) {
-                Tile.tiles[1][0] = Tile(x: 1, y: 0, type: .Wildcard, drop: false)
-            } else if (newPowerup) {
+            if (Grid.level == 0) {
+                Tile.tiles[mode.rawValue]![1][0] = Tile(x: 1, y: 0, type: .Wildcard, drop: false, grid: self)
+            } else if (Grid.newPowerup) {
                 let x = Int(arc4random_uniform(UInt32(Tile.width)))
                 let y = Int(arc4random_uniform(UInt32(Tile.height)))
-                Tile.tiles[x][y] = Tile(x: x, y: y, type: Tile.powerupsUnlocked.last!, drop: false)
-                newPowerup = false
+                Tile.tiles[mode.rawValue]![x][y] = Tile(x: x, y: y, type: Tile.powerupsUnlocked.last!, drop: false, grid: self)
+                Grid.newPowerup = false
             }
-            if (level != -1) {
+            if (Grid.level != -1) {
                 for x in 0..<Tile.width {
                     for y in 0..<Tile.height {
-                        if (Tile.tiles[x][y] == nil) {
-                            Tile.tiles[x][y] = Tile(x: x, y: y, drop: false)
+                        if (Tile.tiles[mode.rawValue]![x][y] == nil) {
+                            Tile.tiles[mode.rawValue]![x][y] = Tile(x: x, y: y, drop: false, grid: self)
                         }
                     }
                 }
             } else {
-                Tile.tiles[0][0] = Tile(x: 0, y: 0, color: .Blue, type: .Normal, drop: false)
-                Tile.tiles[1][0] = Tile(x: 1, y: 0, color: .Blue, type: .Normal, drop: false)
-                Tile.tiles[2][0] = Tile(x: 2, y: 0, color: .Green, type: .Normal, drop: false)
-                Tile.tiles[2][1] = Tile(x: 2, y: 1, color: .Blue, type: .Normal, drop: false)
+                Tile.tiles[mode.rawValue]![0][0] = Tile(x: 0, y: 0, color: .Blue, type: .Normal, drop: false, grid: self)
+                Tile.tiles[mode.rawValue]![1][0] = Tile(x: 1, y: 0, color: .Blue, type: .Normal, drop: false, grid: self)
+                Tile.tiles[mode.rawValue]![2][0] = Tile(x: 2, y: 0, color: .Green, type: .Normal, drop: false, grid: self)
+                Tile.tiles[mode.rawValue]![2][1] = Tile(x: 2, y: 1, color: .Blue, type: .Normal, drop: false, grid: self)
             }
-            save()
+            saveAll()
         } else {
-            for i in Tile.tiles {
-                for o in i {
-                    if (o != nil) {
-                        o!.node!.hidden = false
-                    }
-                }
-            }
             gridPaused = false
         }
         Challenge.new()
-        if (Challenge.challenge != nil) {
-            Challenge.challenge!.check()
-        }
+        Challenge.challenge?.check()
         sc = 0
-        lc = true
+        Grid.lc = true
         update()
     }
     
@@ -1234,34 +1088,34 @@ class Grid: SKScene {
     func update() {
         if (running) {
             var i = 0
-            if (level < Grid.maxLevel && level > 0) {
+            if (Grid.level < Grid.maxLevel && Grid.level > 0) {
                 if (xpBar == nil) {
-                    xpBar = Bar(current: xp, max: maxXP(), color: Tile.getColor(.Green), index: 0, text: nil)
+                    xpBar = Bar(current: Grid.xp, max: Grid.maxXP(), color: Tile.getColor(.Green), index: 0, text: nil, grid: self)
                 } else {
-                    xpBar!.updateBar(xp)
+                    xpBar!.updateBar(Grid.xp)
                 }
                 i += 1
             } else {
                 xpBar?.clearBar()
             }
-            if (mode != 0 && (level > 0 || level == -1)) {
+            if (Grid.level > 0 || Grid.level == -1) {
                 if (energyBar == nil) {
-                    energyBar = Bar(current: energy, max: Grid.maxEnergy, color: Tile.getColor(.Yellow), index: i, text: nil)
+                    energyBar = Bar(current: energy, max: Grid.maxEnergy, color: Tile.getColor(.Yellow), index: i, text: nil, grid: self)
                 } else {
                     energyBar!.updateBar(energy)
                 }
             } else {
                 energyBar?.clearBar()
             }
-            if (xp >= maxXP() && level < Grid.maxLevel) {
+            if (Grid.xp >= Grid.maxXP() && Grid.level < Grid.maxLevel) {
                 levelUp()
-            } else if (mode != 0 && energy == 0) {
+            } else if (energy == 0) {
                 die()
             }
             var x = 0
             var y = 0
             let d = NSDate().timeIntervalSince1970 - lastTime
-            if (mode == 2 && freezeMoves == 0 && started && d >= 1) {
+            if (mode == .Timed && freezeMoves == 0 && started && d >= 1) {
                 energy = max(energy - Grid.maxEnergy/Grid.time, 0)
                 sc += 1
                 if (d > 4) {
@@ -1274,19 +1128,19 @@ class Grid: SKScene {
                 }
             }
             Challenge.new()
-            for o in Tile.tiles {
+            for o in Tile.tiles[mode.rawValue]! {
                 y = 0
                 for i in o {
                     if (i != nil && running) {
                         let p = getPoint(x, y)
-                        if (i!.node!.position != p && Tile.tiles[x][y]!.move == false) {
-                            Tile.tiles[x][y]!.move = true
+                        if (i!.node!.position != p && Tile.tiles[mode.rawValue]![x][y]!.move == false) {
+                            Tile.tiles[mode.rawValue]![x][y]!.move = true
                             i!.node!.removeAllActions()
                             i!.node!.runAction(SKAction.moveTo(p, duration: shuffling ? 0.5 : distance(from: i!.node!.position, to: p)/576))
-                        } else if (y - 1 >= 0 && Tile.tiles[x][y-1] == nil && level > 0) {
+                        } else if (y - 1 >= 0 && Tile.tiles[mode.rawValue]![x][y-1] == nil && Grid.level > 0) {
                             var v: Int = y
                             for v2 in 1...y {
-                                if (Tile.tiles[x][y-v2] != nil) {
+                                if (Tile.tiles[mode.rawValue]![x][y-v2] != nil) {
                                     break
                                 } else {
                                     v = y-v2
@@ -1295,33 +1149,19 @@ class Grid: SKScene {
                             movePoint(from: (x, y), to: (x, v), update: false)
                             i!.node!.removeAllActions()
                             i!.node!.runAction(SKAction.moveTo(getPoint(x,v), duration: shuffling ? 0.5 : distance(from: i!.node!.position, to: getPoint(x,v))/576))
-                            Tile.tiles[x][v]!.move = true
+                            Tile.tiles[mode.rawValue]![x][v]!.move = true
                             if (running && y == Tile.height-1 && (falling[x] == nil || falling[x]!.position.y <= size.height-(CGFloat(Tile.size)/2+CGFloat(Tile.spacing)))) {
-                                Tile.tiles[x][Tile.height-1] = Tile(x: x, y: Tile.height-1, drop: true)
+                                Tile.tiles[mode.rawValue]![x][Tile.height-1] = Tile(x: x, y: Tile.height-1, drop: true, grid: self)
                             }
-                        } else if (Tile.tiles[x][y] != nil && Tile.tiles[x][y]!.move && i!.node!.position == p) {
-                            Tile.tiles[x][y]!.move = false
+                        } else if (Tile.tiles[mode.rawValue]![x][y] != nil && Tile.tiles[mode.rawValue]![x][y]!.move && i!.node!.position == p) {
+                            Tile.tiles[mode.rawValue]![x][y]!.move = false
                         }
-                    } else if (running && y == Tile.height-1 && (falling[x] == nil || falling[x]!.position.y <= size.height-(CGFloat(Tile.size)/2+CGFloat(Tile.spacing))) && level > 0) {
-                        Tile.tiles[x][Tile.height-1] = Tile(x: x, y: Tile.height-1, drop: true)
+                    } else if (running && y == Tile.height-1 && (falling[x] == nil || falling[x]!.position.y <= size.height-(CGFloat(Tile.size)/2+CGFloat(Tile.spacing))) && Grid.level > 0) {
+                        Tile.tiles[mode.rawValue]![x][Tile.height-1] = Tile(x: x, y: Tile.height-1, drop: true, grid: self)
                     }
                     y += 1
                 }
                 x += 1
-            }
-        } else {
-            if (continued == 0 || continued == 1) {
-                frames += 1
-                if (frames == 6) {
-                    frames = 0
-                    if (continued == 1) {
-                        restore()
-                        level = 0
-                        levelUp()
-                    } else {
-                        restore()
-                    }
-                }
             }
         }
     }

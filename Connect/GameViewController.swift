@@ -20,6 +20,12 @@ class GameViewController: UIViewController {
     @IBOutlet weak var StandardButton: Button!
     @IBOutlet weak var MovesButton: Button!
     
+    @IBOutlet weak var TimedLabel: UILabel!
+    @IBOutlet weak var StandardLabel: UILabel!
+    @IBOutlet weak var MovesLabel: UILabel!
+    
+    @IBOutlet weak var HardButton: Button!
+    
     @IBOutlet weak var ChallengeView: SKView!
     
     @IBOutlet weak var PointsLabel: UILabel!
@@ -27,55 +33,44 @@ class GameViewController: UIViewController {
     
     @IBOutlet weak var ModeLabel: UILabel!
     
+    @IBAction func dismiss(sender: UIButton) {
+        dismissViewControllerAnimated(false, completion: nil)
+    }
+    
     @IBAction func ModePress(sender: Button) {
-        switch (sender.tag) {
-        case 0:
-            GameViewController.mode = "Timed"
-        case 2:
-            GameViewController.mode = "Moves"
-        default:
-            GameViewController.mode = "Standard"
-        }
-        Tile.grid!.mode = sender.tag
-        print("Mode: \(sender.tag)")
+        let mode = Grid.Mode(rawValue: sender.tag) ?? .Standard
+        Grid.setMode(mode)
+        GameViewController.mode = String(mode)
+        print("Mode: \(GameViewController.mode)")
     }
     
     @IBAction func DifficultyPress(sender: Button) {
-        Tile.grid!.diff = -(sender.tag+1)
-        print("Difficulty: \(-(sender.tag+1))")
+        Grid.active!.diff = Grid.Difficulty(rawValue: -(sender.tag+1))!
+        print("Difficulty: \(Grid.active!.diff)")
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         print("DISAPPEAR")
         if (title == "Game") {
-            let skView = self.view as! SKView
-            skView.presentScene(nil)
-            let g = Tile.scene as! Grid
+            let g = Grid.active!
             if (g.running) {
                 g.pause()
             }
-        } else if (title == "Main") {
-            GameViewController.scene?.removeAllChildren()
-            GameViewController.scene = nil
-            ChallengeView!.presentScene(nil)
         }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         print("LOAD")
-        if (Tile.scene == nil) {
-            print("NEWGRID")
-            Tile.scene = Grid(size: CGSize(width: 1024, height: 768))
-        }
-        let g = Tile.scene as! Grid
-        if (title == "Game") {
+        Grid.create(CGSize(width: 1024, height: 768))
+        let g = Grid.active
+        if (title == "Game" && g != nil) {
             GameViewController.cont = self
             GameViewController.scene = g
             
-            if (!g.running) {
-                g.restore()
+            if (!g!.running) {
+                g!.restore()
             }
             
             let skView = self.view as! SKView
@@ -89,26 +84,71 @@ class GameViewController: UIViewController {
             skView.ignoresSiblingOrder = true
     
             /* Set the scale mode to scale to fit the window */
-            Tile.scene!.scaleMode = .AspectFill
+            Grid.active!.scaleMode = .AspectFill
             
-            skView.presentScene(Tile.scene!)
-        } else if (ChallengeView != nil && Challenge.challenge != nil) {
+            skView.presentScene(Grid.active!)
+        } else if (ChallengeView != nil || challengeBar == nil || (Challenge.challenge == nil && challengeBar != nil)) {
             GameViewController.scene = SKScene(size: CGSize(width: 296, height: 64))
             GameViewController.scene!.backgroundColor = UIColor.whiteColor()
-            challengeBar = Bar(current: Challenge.challenge!.progress, max: Challenge.challenge!.total, position: CGPoint(x: 1, y: 24), width: 294, color: Challenge.challenge!.color, fontSize: 16, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
-            ChallengeView.presentScene(GameViewController.scene!)
+            if (Challenge.challenge != nil) {
+                challengeBar = Bar(current: Challenge.challenge!.progress, max: Challenge.challenge!.total, position: CGPoint(x: 1, y: 24), width: 294, color: Challenge.challenge!.color, fontSize: 16, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
+            } else {
+                challengeBar = nil
+            }
+            ChallengeView?.presentScene(GameViewController.scene)
+        } else if (ChallengeView != nil) {
+            challengeBar!.updateBar(Challenge.challenge!.progress, max: Challenge.challenge!.total, color: Challenge.challenge!.color, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
         }
-        if (g.modes.count < 3 && MovesButton != nil) {
+        if (Grid.modes < 3 && MovesButton != nil) {
+            MovesButton.backgroundColor = UIColor.lightGrayColor()
             MovesButton.enabled = false
+            MovesLabel.text = "Locked"
+        } else if (MovesButton != nil) {
+            MovesButton.backgroundColor = Tile.getColor(.Blue)
+            MovesButton.enabled = true
+            MovesLabel.text = "Moves"
         }
-        if (g.modes.count < 2 && TimedButton != nil) {
+        if (Grid.modes < 2 && TimedButton != nil) {
+            TimedButton.backgroundColor = UIColor.lightGrayColor()
             TimedButton.enabled = false
+            TimedLabel.text = "Locked"
+        } else if (TimedButton != nil) {
+            TimedButton.backgroundColor = Tile.getColor(.Blue)
+            TimedButton.enabled = true
+            TimedLabel.text = "Timed"
+        }
+        if (StandardButton != nil) {
+            if (Grid.level >= 21) {
+                StandardButton.setImage(UIImage(named: "Endless"), forState: .Normal)
+                StandardLabel.text = "Endless"
+            } else {
+                StandardButton.setImage(UIImage(named: "Play"), forState: .Normal)
+                if (Grid.level <= 0) {
+                    StandardLabel.text = "Tutorial"
+                } else {
+                    StandardLabel.text = "Standard"
+                }
+                
+            }
+        }
+        if (Grid.diffs < 2 && HardButton != nil) {
+            HardButton.backgroundColor = UIColor.lightGrayColor()
+            HardButton.enabled = false
+        } else if (HardButton != nil) {
+            HardButton.backgroundColor = Tile.getColor(.Blue)
+            HardButton.enabled = true
         }
         if (CoinsLabel != nil) {
-            CoinsLabel.text = "Level: \(g.level)"
+            if (Grid.level <= 0) {
+                CoinsLabel.text = "Tutorial"
+            } else if (Grid.level >= 21) {
+                CoinsLabel.text = "Max Level"
+            } else {
+                CoinsLabel.text = "Level: \(Grid.level)"
+            }
         }
         if (PointsLabel != nil) {
-            PointsLabel.text = "XP: \(g.points)"
+            PointsLabel.text = "XP: \(Grid.points)"
         }
         if (ModeLabel != nil) {
             ModeLabel.text = GameViewController.mode

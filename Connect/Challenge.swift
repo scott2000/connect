@@ -13,7 +13,7 @@ import SpriteKit
 class Challenge {
     static var challenge: Challenge? = nil
     static var lastChallenge: NSDate = NSDate()
-    static var bar: Bar?
+    static var bar: [Int: Bar?] = [:]
     var daily: Bool
     let goal: Goal
     let total: Int
@@ -27,7 +27,7 @@ class Challenge {
     }
     
     static func new() {
-        if (Tile.grid!.level >= 7) {
+        if (Grid.level >= 7) {
             if (-lastChallenge.timeIntervalSinceNow >= 60*60*24) {
                 Challenge.lastChallenge = NSDate()
                 var i = 0
@@ -38,10 +38,10 @@ class Challenge {
                     i = Tile.rg((180,216))
                 case 1:
                     g = .Wildcards
-                    i = Tile.rg((18,36))
+                    i = Tile.rg((36,72))
                 case 2:
                     g = .Powerups
-                    i = Tile.rg((8,16))
+                    i = Tile.rg((18,27))
                 case 3:
                     g = .Chain
                     i = Tile.rg((16,24))
@@ -59,7 +59,7 @@ class Challenge {
             } else if (challenge == nil) {
                 var i = 0
                 var g: Goal? = nil
-                switch(arc4random_uniform(Tile.grid!.mode == 2 ? 7 : 6)) {
+                switch(arc4random_uniform(Grid.active!.mode == .Timed ? 7 : 6)) {
                 case 0:
                     g = .Tiles(Tile.Color(rawValue: Int(arc4random_uniform(UInt32(Tile.maxColors))))!)
                     i = Tile.rg((48,72))
@@ -102,16 +102,15 @@ class Challenge {
     }
     
     static func load(s: String) {
-        if (Tile.grid!.level >= 7) {
+        if (Grid.level >= 7) {
             let a = s.componentsSeparatedByString(".")
             lastChallenge = NSDate(timeIntervalSince1970: NSTimeInterval(Int(a[0])!))
             if (a.count >= 6) {
                 challenge = Challenge(goal: Goal.from(a[1]), total: Int(a[4])!, daily: Int(a[5])! == 1)
                 challenge!.progress = Int(a[2])!
                 challenge!.best = Int(a[3])!
-            } else {
-                new()
             }
+            new()
         } else {
             lastChallenge = NSDate(timeIntervalSince1970: 0)
         }
@@ -213,8 +212,8 @@ class Challenge {
             Tile.cooldown = Tile.rg((-432,-288))
             let increase = Tile.rg((2592,7776))
             print("Daily Challenge Completed: +\(increase) XP")
-            Tile.grid!.xp += increase
-            Tile.grid!.points += increase
+            Grid.xp += increase
+            Grid.points += increase
             
             let notification = UILocalNotification()
             notification.alertBody = "New Daily Challenge Available"
@@ -226,8 +225,8 @@ class Challenge {
             Tile.cooldown = min(Tile.cooldown-72,-18)
             let increase = Tile.rg((864,1728))
             print("Challenge Completed: +\(increase) XP")
-            Tile.grid!.xp += increase
-            Tile.grid!.points += increase
+            Grid.xp += increase
+            Grid.points += increase
         }
         Challenge.remove()
     }
@@ -236,58 +235,47 @@ class Challenge {
         best = max(progress,best)
         if (progress >= total) {
             complete()
-        } else if (Tile.grid!.running && Tile.grid!.mode != 0) {
-            if (Challenge.bar == nil) {
-                Challenge.bar = Bar(current: progress, max: total, color: color, index: -1, text: (daily ? "DAILY: " : "") + goal.text(progress, best: best, total: total))
-            } else {
-                Challenge.bar!.updateBar(progress, max: total, color: color, text: (daily ? "DAILY: " : "") + goal.text(progress, best: best, total: total))
-            }
         } else {
-            Challenge.bar?.clearBar()
-            Challenge.bar = nil
+            if (Grid.active != nil && Challenge.bar[Grid.active!.mode.rawValue] == nil) {
+                Challenge.bar[Grid.active!.mode.rawValue] = Bar(current: progress, max: total, color: color, index: -1, text: (daily ? "DAILY: " : "") + goal.text(progress, best: best, total: total), grid: Grid.active)
+            } else if (Grid.active != nil) {
+                Challenge.bar[Grid.active!.mode.rawValue]!!.updateBar(progress, max: total, color: color, text: (daily ? "DAILY: " : "") + goal.text(progress, best: best, total: total))
+            }
         }
     }
     
     func reset() {
-        if (Tile.grid!.mode != 0) {
-            progress = 0
-            check()
-        }
+        progress = 0
+        check()
     }
     
     func swap() {
-        if (Tile.grid!.mode != 0) {
-            switch (goal) {
-            case .Swaps:
-                progress += 1
-                check()
-            default:
-                return
-            }
+        switch (goal) {
+        case .Swaps:
+            progress += 1
+            check()
+        default:
+            return
         }
     }
     
     func chain(length: Int) {
-        if (Tile.grid!.mode != 0) {
-            switch (goal) {
-            case .Chain:
-                progress = max(length,best)
-                check()
-            default:
-                return
-            }
+        switch (goal) {
+        case .Chain:
+            progress = max(length,best)
+            check()
+        default:
+            return
         }
     }
     
     func survive(secs: Int) {
-        if (Tile.grid!.mode != 0) {
-            switch (goal) {
-            case .Survive:
-                progress += secs
-                check()
-            default:
-                return
-            }
+        switch (goal) {
+        case .Survive:
+            progress += secs
+            check()
+        default:
+            return
         }
     }
     
@@ -309,35 +297,31 @@ class Challenge {
     }
     
     func points(points: Int) {
-        if (Tile.grid!.mode != 0) {
-            switch (goal) {
-            case .Points:
-                progress += points
-                check()
-            default:
-                return
-            }
+        switch (goal) {
+        case .Points:
+            progress += points
+            check()
+        default:
+            return
         }
     }
     
     func clear(color: Tile.Color, type: Tile.SpecialType) {
-        if (Tile.grid!.mode != 0) {
-            switch(goal) {
-            case .Tiles(let c):
-                if (c == color) {
-                    progress += 1
-                }
-            case .Wildcards:
-                if (type == .Wildcard) {
-                    progress += 1
-                }
-            case .Powerups:
-                if (type != .Normal && type != .Wildcard) {
-                    progress += 1
-                }
-            default:
-                return
+        switch(goal) {
+        case .Tiles(let c):
+            if (c == color) {
+                progress += 1
             }
+        case .Wildcards:
+            if (type == .Wildcard) {
+                progress += 1
+            }
+        case .Powerups:
+            if (type != .Normal && type != .Wildcard) {
+                progress += 1
+            }
+        default:
+            return
         }
     }
 }

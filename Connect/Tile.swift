@@ -16,15 +16,13 @@ class Tile {
     static let wildcardCooldown = (12,24)
     static let powerupCooldown = (48,72)
     static let maxColors = 6
-    static var scene: SKScene?
     static var colorsUnlocked = 3
     static var powerupsUnlocked: [SpecialType] = []
     static var cooldown = 48
     static var secondary = 0
-    static var tiles: [[Tile?]] = [[Tile?]](count: width, repeatedValue: [Tile?](count: height, repeatedValue: nil))
+    static var tiles: [Int: [[Tile?]]] = [:]
     static var width: Int = 3
     static var height: Int = 1
-    static var grid: Grid?
     static var save = -96
     var color: Color
     var node: SKShapeNode?
@@ -48,20 +46,17 @@ class Tile {
         case None = -1, Blue, Green, Red, Yellow, Purple, Orange
     }
     
-    init(x: Int, y: Int, drop: Bool) {
+    init(x: Int, y: Int, drop: Bool, grid: Grid) {
         self.x = x
         self.y = y
         self.color = Color.init(rawValue: Int(arc4random_uniform(UInt32(Tile.colorsUnlocked))))!
-        if (Tile.cooldown <= 0 && Tile.grid!.level > 0 && Tile.secondary == 0) {
+        if (Tile.cooldown <= 0 && Grid.level > 0 && Tile.secondary == 0) {
             let r = Int(arc4random_uniform(5));
             if (Tile.powerupsUnlocked.count == 0 || (r != 0 && r != 1)) {
                 self.type = .Wildcard
             } else {
                 self.type = Tile.powerupsUnlocked[Int(arc4random_uniform(UInt32(Tile.powerupsUnlocked.count)))]
             }
-        }
-        if (type == .EnergyBoost && Tile.grid!.mode == 0) {
-            type = .Wildcard
         }
         if (type == .Normal) {
             Tile.cooldown -= 1
@@ -73,23 +68,23 @@ class Tile {
             Tile.cooldown = Tile.cooldown + Tile.rg(Tile.powerupCooldown)
             Tile.secondary += 6
         }
-        create(drop)
+        create(drop, grid: grid)
     }
     
-    init(x: Int, y: Int, type: SpecialType, drop: Bool) {
+    init(x: Int, y: Int, type: SpecialType, drop: Bool, grid: Grid) {
         self.x = x
         self.y = y
         self.color = Color.init(rawValue: Int(arc4random_uniform(UInt32(Tile.colorsUnlocked))))!
         self.type = type
-        create(drop)
+        create(drop, grid: grid)
     }
     
-    init(x: Int, y: Int, color: Color, type: SpecialType, drop: Bool) {
+    init(x: Int, y: Int, color: Color, type: SpecialType, drop: Bool, grid: Grid) {
         self.x = x
         self.y = y
         self.color = color
         self.type = type
-        create(drop)
+        create(drop, grid: grid)
     }
     
     deinit {
@@ -97,48 +92,23 @@ class Tile {
     }
     
     static func resize(x: Int, _ y: Int) {
-        clearNodes()
         Tile.width = x
         Tile.height = y
         Tile.cooldown = 48
-        Tile.tiles = [[Tile?]](count: x, repeatedValue: [Tile?](count: y, repeatedValue: nil))
-    }
-    
-    static func reset() {
-        clearNodes()
-        Tile.cooldown = 48
-        Tile.tiles = [[Tile?]](count: width, repeatedValue: [Tile?](count: height, repeatedValue: nil))
-    }
-    
-    static func clearNodes() {
-        for x in 0..<width {
-            for y in 0..<height {
-                if let tile = Tile.tiles[x][y] {
-                    tile.clearNode()
-                }
-            }
+        for n in 0..<Grid.modes {
+            Grid.grids[Grid.Mode(rawValue: n)!]!.falling = [SKShapeNode?](count: Tile.width, repeatedValue: nil)
+            Tile.tiles[n] = [[Tile?]](count: x, repeatedValue: [Tile?](count: y, repeatedValue: nil))
         }
+    }
+    
+    static func reset(mode: Grid.Mode) {
+        Tile.cooldown = 48
+        Tile.tiles[mode.rawValue] = [[Tile?]](count: width, repeatedValue: [Tile?](count: height, repeatedValue: nil))
     }
     
     static func rg(input: (Int, Int)) -> Int {
         let r = input.1 - input.0
         return input.0 + Int(arc4random_uniform(UInt32(r)))
-    }
-    
-    static func setScene(scene: SKScene) {
-        Tile.scene = scene
-    }
-    
-    static func removeGrid(grid: Grid) {
-        if (Tile.grid == grid) {
-            Tile.grid = nil
-            Tile.reset()
-        }
-    }
-    
-    static func setGrid(grid: Grid?) {
-        Tile.grid = grid
-        Tile.reset()
     }
     
     static func setColors(colors: Int) {
@@ -162,7 +132,7 @@ class Tile {
         case .Green:
             return UIColor(red: 0.1, green: 0.75, blue: 0.1, alpha: 1.0)
         case .Blue:
-            return UIColor(red: 0.25, green: 0.25, blue: 1.0, alpha: 1.0)
+            return UIColor(red: 0.1, green: 0.3, blue: 1.0, alpha: 1.0)
         case .Purple:
             return UIColor(red: 0.5, green: 0.0, blue: 0.7, alpha: 1.0)
         default:
@@ -170,19 +140,19 @@ class Tile {
         }
     }
     
-    static func getData() -> String {
+    static func getData(mode: Grid.Mode) -> String {
         Tile.save = -96
-        var str = "\(Tile.width).\(Tile.height).\(Tile.colorsUnlocked).\(Tile.cooldown):"
-        if (Tile.tiles.count != Tile.width) {
+        var str = "\(Tile.width).\(Tile.height).\(Tile.cooldown):"
+        if (Tile.tiles[mode.rawValue]!.count != Tile.width) {
             print("Error Compiling Node List")
             str += "?"
         } else {
             for x in 0..<width {
                 for y in 0..<height {
-                    if (Tile.tiles[x][y] == nil) {
+                    if (Tile.tiles[mode.rawValue]![x][y] == nil) {
                         str += "?"
                     } else {
-                        str += "\(Tile.tiles[x][y]!.color.rawValue+1)\(Tile.tiles[x][y]!.type.rawValue)"
+                        str += "\(Tile.tiles[mode.rawValue]![x][y]!.color.rawValue+1)\(Tile.tiles[mode.rawValue]![x][y]!.type.rawValue)"
                     }
                     if (y < Tile.height-1) {
                         str += "."
@@ -197,30 +167,27 @@ class Tile {
         return str
     }
     
-    static func loadData(str: String) {
+    static func loadData(str: String, grid: Grid) {
         let a = str.componentsSeparatedByString(":")
         let a0 = a[0].componentsSeparatedByString(".")
         Tile.resize(Int(a0[0])!,Int(a0[1])!)
-        Tile.setColors(Int(a0[2])!)
         Tile.save = -96
         if (a[1] != "?") {
             let a1 = a[1].componentsSeparatedByString(";")
-            Tile.grid!.gridPaused = true
             var x = 0
             for b in a1 {
                 var y = 0
                 for c in b.componentsSeparatedByString(".") {
                     if (c != "?") {
                         let d = [String(c.substringToIndex(c.startIndex.successor())),String(c.substringFromIndex(c.startIndex.successor()))]
-                        Tile.tiles[x][y]! = Tile(x: x, y: y, color: Tile.Color(rawValue: Int(d[0])!-1)!, type: Tile.SpecialType(rawValue: d[1])!, drop: false)
-                        Tile.tiles[x][y]!.node!.hidden = true
+                        Tile.tiles[grid.mode.rawValue]![x][y]! = Tile(x: x, y: y, color: Tile.Color(rawValue: Int(d[0])!-1)!, type: Tile.SpecialType(rawValue: d[1])!, drop: false, grid: grid)
                     }
                     y += 1
                 }
                 x += 1
             }
         }
-        Tile.cooldown = Int(a0[3])!
+        Tile.cooldown = Int(a0[2])!
         Tile.save = 0
     }
     
@@ -231,14 +198,17 @@ class Tile {
         }
     }
     
-    func getPoint(x: Int, _ y: Int) -> CGPoint {
+    func getPoint(x: Int, _ y: Int, grid: Grid) -> CGPoint {
         let pivot = Double(Tile.size+Tile.spacing)
-        let xp = Double(Tile.scene!.size.width)/2-pivot*Double(Tile.width-1)/2
-        let yp = Double(Tile.scene!.size.height)/2-pivot*Double(Tile.height-1)/2
+        let xp = Double(grid.size.width)/2-pivot*Double(Tile.width-1)/2
+        let yp = Double(grid.size.height)/2-pivot*Double(Tile.height-1)/2
         return CGPoint(x: Double(x)*pivot+xp, y: Double(y)*pivot+yp)
     }
     
-    func create(drop: Bool) {
+    func create(drop: Bool, grid: Grid) {
+        if (Tile.tiles[grid.mode.rawValue] == nil) {
+            Tile.tiles[grid.mode.rawValue] = [[Tile?]](count: Tile.width, repeatedValue: [Tile?](count: Tile.height, repeatedValue: nil))
+        }
         let product = Tile.circle.copy() as! SKShapeNode
         if (type == .Wildcard) {
             color = .None
@@ -248,14 +218,14 @@ class Tile {
         product.fillColor = type == .Wildcard ? UIColor.whiteColor() : Tile.getColor(color)
         product.strokeColor = type == .Wildcard ? UIColor.blackColor() : Tile.getColor(color)
         product.lineWidth = 3.0
-        product.position = getPoint(x,y)
+        product.position = getPoint(x,y,grid:grid)
         if (drop) {
-            product.position.y = Tile.scene!.size.height+CGFloat(Tile.size+Tile.spacing)/2
-            Tile.grid!.falling[x] = product
+            product.position.y = grid.size.height+CGFloat(Tile.size+Tile.spacing)/2
+            grid.falling[x] = product
         }
         node = product
-        Tile.tiles[x][y] = self
+        Tile.tiles[grid.mode.rawValue]![x][y] = self
         
-        Tile.scene!.addChild(product)
+        grid.addChild(product)
     }
 }

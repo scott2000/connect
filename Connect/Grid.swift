@@ -326,7 +326,7 @@ class Grid: SKScene {
     func forcePause() {
         gridPaused = true
         Grid.display.main = "Paused"
-        Grid.display.sub = "Score: \(pointsSoFar)\(pointsSoFar > record!.points ? " (High Score)" : "")"
+        Grid.display.sub = "Score: \(pointsSoFar)\(pointsSoFar >= record!.points ? " (High Score)" : "")"
         reset()
     }
     
@@ -1011,7 +1011,7 @@ class Grid: SKScene {
         } else if (mode == .Timed) {
             Grid.display.main = "Game Over"
         }
-        Grid.display.sub = "Score: \(pointsSoFar)\(pointsSoFar > record!.points ? " (High Score)" : "")"
+        Grid.display.sub = "Score: \(pointsSoFar)\(pointsSoFar >= record!.points ? " (High Score)" : "")"
         Challenge.challenge?.points(pointsSoFar)
         record?.points(pointsSoFar)
         if (mode != .Moves) {
@@ -1042,6 +1042,7 @@ class Grid: SKScene {
             xpBar = nil
             energyBar = nil
         }
+        record?.points(pointsSoFar)
         Challenge.challenge?.check()
         clearChain()
         frames = 0

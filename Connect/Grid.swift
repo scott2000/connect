@@ -184,8 +184,10 @@ class Grid: SKScene {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         for touch in touches {
             let location = touch.locationInNode(self)
-            if (findPoint(location) != nil || !running) {
+            if (findPoint(location) != nil) {
                 move(location)
+            } else if (location.y >= size.height-36) {
+                pause()
             }
         }
     }

@@ -11,7 +11,7 @@ import SpriteKit
 
 class Grid: SKScene {
     static let basePath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-    static let lvlsys = 14
+    static let lvlsys = 15
     static let maxEnergy = 144
     static let maxLevel = 21
     static let font = "Helvetica Neue"
@@ -84,15 +84,16 @@ class Grid: SKScene {
             let (l1, x1) = fixXP(level, xp, lastVersion)
             level = l1
             xp = x1
-        } else {
-            for n in grids.keys {
-                let g = grids[n]
-                g?.loadAll()
-            }
         }
         if (level > -2) {
             for i in -1...level {
                 newUpgrade(i)
+            }
+        }
+        if (lastVersion == lvlsys) {
+            for n in grids.keys {
+                let g = grids[n]
+                g?.loadAll()
             }
         }
     }
@@ -140,8 +141,11 @@ class Grid: SKScene {
             energy = Int(data[0]) ?? Grid.maxEnergy
             freezeMoves = Int(data[1]) ?? 0
             if (data.count > 2) {
+                gridPaused = true
                 Tile.loadData(data[2], grid: self)
                 swaps = Int(data[3]) ?? 0
+            } else {
+                gridPaused = false
             }
         }
         falling = [SKShapeNode?](count: Tile.width, repeatedValue: nil)

@@ -142,7 +142,7 @@ class Tile {
     
     static func getData(mode: Grid.Mode) -> String {
         Tile.save = -96
-        var str = "\(Tile.width).\(Tile.height).\(Tile.cooldown):"
+        var str = "\(Tile.cooldown).\(Tile.secondary):"
         if (Tile.tiles[mode.rawValue]!.count != Tile.width) {
             print("Error Compiling Node List")
             str += "?"
@@ -170,7 +170,6 @@ class Tile {
     static func loadData(str: String, grid: Grid) {
         let a = str.componentsSeparatedByString(":")
         let a0 = a[0].componentsSeparatedByString(".")
-        Tile.resize(Int(a0[0])!,Int(a0[1])!)
         Tile.save = -96
         if (a[1] != "?") {
             let a1 = a[1].componentsSeparatedByString(";")
@@ -187,7 +186,8 @@ class Tile {
                 x += 1
             }
         }
-        Tile.cooldown = Int(a0[2])!
+        Tile.cooldown = Int(a0[0]) ?? 0
+        Tile.secondary = Int(a0[1])! ?? 0
         Tile.save = 0
     }
     

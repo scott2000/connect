@@ -72,10 +72,10 @@ class Bar {
         print("Bar\(max).createBar()")
         back.position = position
         back.position.x += CGFloat(width/2)
-        back.zPosition = -3
+        back.zPosition = -288
         back.blendMode = .Replace
         scene?.addChild(back)
-        separator.zPosition = -1
+        separator.zPosition = -286
         separator.blendMode = .Replace
         scene?.addChild(separator)
         if (text != nil) {
@@ -89,7 +89,7 @@ class Bar {
         front.anchorPoint = CGPoint(x: 0, y: 0.5)
         front.position = position
 //            front.position.x += CGFloat(u/2)
-        front.zPosition = -2
+        front.zPosition = -287
         front.blendMode = .Replace
         scene?.addChild(front)
         separator.position = position
@@ -110,6 +110,9 @@ class Bar {
     
     func updateBar(current: Int, text: String?) {
         if (self.current != current || self.text != text) {
+            if (self.current > 0) {
+                front.color = color
+            }
             let t = Double(abs(min(current,max)-min(self.current,max)))/Double(max)
             self.current = current
             self.text = text

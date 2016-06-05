@@ -999,7 +999,6 @@ class Grid: SKScene {
         }
         Challenge.challenge?.points(pointsSoFar)
         reset()
-        saveAll()
     }
     
     func die() {
@@ -1019,7 +1018,6 @@ class Grid: SKScene {
         }
         pointsSoFar = 0
         reset()
-        saveAll()
     }
     
     func reset() {
@@ -1091,6 +1089,7 @@ class Grid: SKScene {
         sc = 0
         Grid.lc = true
         update()
+        saveAll()
     }
     
     override func update(currentTime: NSTimeInterval) {

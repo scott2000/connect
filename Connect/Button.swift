@@ -11,12 +11,9 @@ import UIKit
 import SpriteKit
 
 class Button: UIButton {
-    static var buttons = 0
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        Button.buttons += 1
-        print("init \(tag) (\(Button.buttons) \(Button.buttons == 1 ? "button" : "buttons"))")
         switch (tag) {
         case 0:
             Grid.create(CGSize(width: 1024, height: 768))
@@ -29,16 +26,23 @@ class Button: UIButton {
             setImage(UIImage(named: "Timed"), forState: .Normal)
         case 2:
             setImage(UIImage(named: "Moves"), forState: .Normal)
+        case -3:
+            setImage(UIImage(named: "Back"), forState: .Normal)
+        case -4:
+            setImage(UIImage(named: "PlaySmall"), forState: .Normal)
+        case -5:
+            setImage(UIImage(named: "Main"), forState: .Normal)
+        case -6:
+            setImage(UIImage(named: "Pause"), forState: .Normal)
         default:
             setImage(nil, forState: .Normal)
         }
-        backgroundColor = Tile.getColor(.Blue)
+        if (tag != -6) {
+            backgroundColor = Tile.getColor(.Blue)
+        } else {
+            backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
+        }
         layer.cornerRadius = bounds.width/2
         clipsToBounds = true
-    }
-    
-    deinit {
-        Button.buttons -= 1
-        print("deinit \(tag) (\(Button.buttons) left)")
     }
 }

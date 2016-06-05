@@ -11,6 +11,7 @@ import SpriteKit
 
 class GameViewController: UIViewController {
     static var scene: SKScene?
+    static var mcont: UIViewController?
     static var cont: UIViewController?
     static var mode = "Standard"
     
@@ -19,6 +20,9 @@ class GameViewController: UIViewController {
     @IBOutlet weak var TimedButton: Button!
     @IBOutlet weak var StandardButton: Button!
     @IBOutlet weak var MovesButton: Button!
+    
+    @IBOutlet weak var MainLabel: UILabel!
+    @IBOutlet weak var SubLabel: UILabel!
     
     @IBOutlet weak var TimedLabel: UILabel!
     @IBOutlet weak var StandardLabel: UILabel!
@@ -33,8 +37,20 @@ class GameViewController: UIViewController {
     
     @IBOutlet weak var ModeLabel: UILabel!
     
+    @IBAction func dismissAnimated(sender: UIButton) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
     @IBAction func dismiss(sender: UIButton) {
         dismissViewControllerAnimated(false, completion: nil)
+    }
+    
+    @IBAction func main(sender: UIButton) {
+        GameViewController.mcont?.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    @IBAction func PauseGame(sender: UIButton) {
+        Grid.active?.pause()
     }
     
     @IBAction func ModePress(sender: Button) {
@@ -49,9 +65,14 @@ class GameViewController: UIViewController {
         print("Difficulty: \(Grid.active!.diff)")
     }
     
+    static func number(n: Int) -> String {
+        let numberFormatter = NSNumberFormatter()
+        numberFormatter.numberStyle = .DecimalStyle
+        return numberFormatter.stringFromNumber(n) ?? "0"
+    }
+    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        print("DISAPPEAR")
         if (title == "Game") {
             let g = Grid.active!
             if (g.running) {
@@ -62,10 +83,9 @@ class GameViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        print("LOAD")
         Grid.create(CGSize(width: 1024, height: 768))
         let g = Grid.active
-        if (title == "Game" && g != nil) {
+        if (title == "Game" && g != nil && GameViewController.scene != g) {
             GameViewController.cont = self
             GameViewController.scene = g
             
@@ -117,7 +137,10 @@ class GameViewController: UIViewController {
             TimedButton.enabled = true
             TimedLabel.text = "Timed"
         }
+        MainLabel?.text = Grid.display.main
+        SubLabel?.text = Grid.display.sub
         if (StandardButton != nil) {
+            GameViewController.mcont = self
             if (Grid.level >= 21) {
                 StandardButton.setImage(UIImage(named: "Endless"), forState: .Normal)
                 StandardLabel.text = "Endless"
@@ -140,15 +163,15 @@ class GameViewController: UIViewController {
         }
         if (CoinsLabel != nil) {
             if (Grid.level <= 0) {
-                CoinsLabel.text = "Tutorial"
+                CoinsLabel.text = "Tutorial \(Grid.level+3)"
             } else if (Grid.level >= 21) {
                 CoinsLabel.text = "Max Level"
             } else {
-                CoinsLabel.text = "Level: \(Grid.level)"
+                CoinsLabel.text = "Level \(Grid.level)"
             }
         }
         if (PointsLabel != nil) {
-            PointsLabel.text = "XP: \(Grid.points)"
+            PointsLabel.text = "\(GameViewController.number(Grid.points)) Points"
         }
         if (ModeLabel != nil) {
             ModeLabel.text = GameViewController.mode
@@ -169,7 +192,6 @@ class GameViewController: UIViewController {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        print("MEMWARNING")
         // Release any cached data, images, etc that aren't in use.
     }
 

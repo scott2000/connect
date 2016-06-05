@@ -11,7 +11,7 @@ import SpriteKit
 
 class Grid: SKScene {
     static let basePath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-    static let lvlsys = 15
+    static let lvlsys = 17
     static let maxEnergy = 144
     static let maxLevel = 21
     static let font = "Helvetica Neue"
@@ -43,13 +43,14 @@ class Grid: SKScene {
     let mode: Grid.Mode
     var lastTime = NSDate().timeIntervalSince1970
     var gridPaused = false
-    var deaths = 0
     var freezeMoves = 0
     var restoring = false
     var shuffling = false
     var sc: Int = 0
     var xpBar: Bar?
     var energyBar: Bar?
+    var pointsSoFar = 0
+    var record: Records?
     
     static func create(size: CGSize) {
         if (grids.count == 0) {
@@ -95,6 +96,11 @@ class Grid: SKScene {
                 let g = grids[n]
                 g?.loadAll()
             }
+        } else {
+            for n in grids.keys {
+                let g = grids[n]
+                g?.loadAll(lastVersion)
+            }
         }
     }
     
@@ -110,12 +116,10 @@ class Grid: SKScene {
     }
     
     deinit {
-        print("DEINIT GRID")
         saveAll()
     }
     
     init(size: CGSize, mode: Grid.Mode) {
-        print("INIT GRID")
         self.mode = mode
         super.init(size: size)
         backgroundColor = UIColor.whiteColor()
@@ -135,18 +139,34 @@ class Grid: SKScene {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     func loadAll() {
-        if let data = Grid.loadData(Grid.basePath+"/\(Grid.lvlsys)-\(mode.rawValue).txt") {
-            energy = Int(data[0]) ?? Grid.maxEnergy
-            freezeMoves = Int(data[1]) ?? 0
-            if (data.count > 2) {
-                gridPaused = true
-                Tile.loadData(data[2], grid: self)
-                swaps = Int(data[3]) ?? 0
-            } else {
+        loadAll(Grid.lvlsys)
+    }
+    
+    func loadAll(lvlsys: Int) {
+        if let data = Grid.loadData(Grid.basePath+"/\(lvlsys)-\(mode.rawValue).txt") {
+            if (lvlsys != Grid.lvlsys) {
                 gridPaused = false
+                if (data.count >= 3) {
+                    record = Records(s: data[2])
+                } else {
+                    record = Records(s: nil)
+                }
+            } else {
+                energy = Int(data[0]) ?? Grid.maxEnergy
+                freezeMoves = Int(data[1]) ?? 0
+                record = Records(s: data[2])
+                if (data.count > 3) {
+                    gridPaused = true
+                    Tile.loadData(data[3], grid: self)
+                    swaps = Int(data[4]) ?? 0
+                    pointsSoFar = Int(data[5]) ?? 0
+                } else {
+                    gridPaused = false
+                }
             }
+        } else {
+            record = Records(s: nil)
         }
         falling = [SKShapeNode?](count: Tile.width, repeatedValue: nil)
     }
@@ -154,9 +174,9 @@ class Grid: SKScene {
     func saveAll() {
         Grid.saveData([String(Grid.level),String(Grid.xp),String(Grid.points),Challenge.save()], path: Grid.basePath+"/\(Grid.lvlsys).txt")
         if (running || gridPaused) {
-            Grid.saveData([String(energy),String(freezeMoves),Tile.getData(mode),String(swaps)], path: Grid.basePath+"/\(Grid.lvlsys)-\(mode.rawValue).txt")
+            Grid.saveData([String(energy),String(freezeMoves),record!.save(),Tile.getData(mode),String(swaps),String(pointsSoFar)], path: Grid.basePath+"/\(Grid.lvlsys)-\(mode.rawValue).txt")
         } else {
-            Grid.saveData([String(energy),String(freezeMoves)], path: Grid.basePath+"/\(Grid.lvlsys)-\(mode.rawValue).txt")
+            Grid.saveData([String(energy),String(freezeMoves),record!.save()], path: Grid.basePath+"/\(Grid.lvlsys)-\(mode.rawValue).txt")
         }
         Grid.saveVersion()
     }
@@ -211,7 +231,7 @@ class Grid: SKScene {
     
     static func saveData(array: [String], path: String) {
         let j = array.joinWithSeparator(",")
-        print("Save: \(j) at \(path.stringByReplacingOccurrencesOfString(Grid.basePath+"/", withString: "\""))\"")
+        print("Save: \(j) to \(path.stringByReplacingOccurrencesOfString(Grid.basePath+"/", withString: "\""))\"")
         do {
             try j.writeToFile(path, atomically: true, encoding: NSASCIIStringEncoding)
         } catch {
@@ -222,7 +242,7 @@ class Grid: SKScene {
     static func loadData(path: String) -> [String]? {
         do {
             let c = try String(contentsOfFile: path, encoding: NSASCIIStringEncoding)
-            print("Load: \(c)")
+            print("Load: \(c) from \(path.stringByReplacingOccurrencesOfString(Grid.basePath+"/", withString: "\""))\"")
             return c.componentsSeparatedByString(",")
         } catch {
             return nil
@@ -306,7 +326,7 @@ class Grid: SKScene {
     func forcePause() {
         gridPaused = true
         Grid.display.main = "Paused"
-        Grid.display.sub = "Points: \(Grid.points)"
+        Grid.display.sub = "Score: \(pointsSoFar)\(pointsSoFar > record!.points ? " (High Score)" : "")"
         reset()
     }
     
@@ -430,9 +450,7 @@ class Grid: SKScene {
             let i = 48
             Grid.xp += i
             Grid.points += i
-            if (Challenge.challenge != nil) {
-                Challenge.challenge!.points(i)
-            }
+            pointsSoFar += i
         case .Explode:
             var pus: [(Tile.SpecialType, Tile.Color, Int, Int)] = []
             for x in max(xb-3,0)..<min(xb+3,Tile.width) {
@@ -441,9 +459,7 @@ class Grid: SKScene {
                         let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 36 : 9
                         Grid.xp += i
                         Grid.points += i
-                        if (Challenge.challenge != nil) {
-                            Challenge.challenge!.points(i)
-                        }
+                        pointsSoFar += i
                         let t = Tile.tiles[mode.rawValue]![x][y]!.type
                         if (Challenge.challenge != nil) {
                             Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
@@ -451,9 +467,7 @@ class Grid: SKScene {
                         if (t != .Normal && t != .Wildcard) {
                             Grid.xp += 18
                             Grid.points += 18
-                            if (Challenge.challenge != nil) {
-                                Challenge.challenge!.points(18)
-                            }
+                            pointsSoFar += 18
                             pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                         }
                         Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -469,12 +483,9 @@ class Grid: SKScene {
             for x in 0..<Tile.width {
                 for y in 0..<Tile.height {
                     if (Tile.tiles[mode.rawValue]![x][y] != nil && Tile.tiles[mode.rawValue]![x][y]!.color == color && Tile.tiles[mode.rawValue]![x][y]!.type != .Wildcard) {
-                        let i = 9
                         Grid.xp += 9
                         Grid.points += 9
-                        if (Challenge.challenge != nil) {
-                            Challenge.challenge!.points(i)
-                        }
+                        pointsSoFar += 9
                         let t = Tile.tiles[mode.rawValue]![x][y]!.type
                         if (Challenge.challenge != nil) {
                             Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
@@ -482,9 +493,7 @@ class Grid: SKScene {
                         if (t != .Normal && t != .Wildcard && t != .ClearColor) {
                             Grid.xp += 18
                             Grid.points += 18
-                            if (Challenge.challenge != nil) {
-                                Challenge.challenge!.points(18)
-                            }
+                            pointsSoFar += 18
                             pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                         }
                         Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -503,9 +512,7 @@ class Grid: SKScene {
                     let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 36 : 9
                     Grid.xp += i
                     Grid.points += i
-                    if (Challenge.challenge != nil) {
-                        Challenge.challenge!.points(i)
-                    }
+                    pointsSoFar += i
                     let t = Tile.tiles[mode.rawValue]![x][y]!.type
                     if (Challenge.challenge != nil) {
                         Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
@@ -513,9 +520,7 @@ class Grid: SKScene {
                     if (t != .Normal && t != .Wildcard) {
                         Grid.xp += 18
                         Grid.points += 18
-                        if (Challenge.challenge != nil) {
-                            Challenge.challenge!.points(18)
-                        }
+                        pointsSoFar += 18
                         pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                     }
                     Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -528,9 +533,7 @@ class Grid: SKScene {
                     let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 36 : 9
                     Grid.xp += i
                     Grid.points += i
-                    if (Challenge.challenge != nil) {
-                        Challenge.challenge!.points(i)
-                    }
+                    pointsSoFar += i
                     let t = Tile.tiles[mode.rawValue]![x][y]!.type
                     if (Challenge.challenge != nil) {
                         Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
@@ -538,9 +541,7 @@ class Grid: SKScene {
                     if (t != .Normal && t != .Wildcard) {
                         Grid.xp += 18
                         Grid.points += 18
-                        if (Challenge.challenge != nil) {
-                            Challenge.challenge!.points(18)
-                        }
+                        pointsSoFar += 18
                         pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                     }
                     Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -564,9 +565,7 @@ class Grid: SKScene {
                         let i = 6
                         Grid.xp += i
                         Grid.points += i
-                        if (Challenge.challenge != nil) {
-                            Challenge.challenge!.points(i)
-                        }
+                        pointsSoFar += i
                         Tile.tiles[mode.rawValue]![x][y]!.type = .Wildcard
                         Tile.tiles[mode.rawValue]![x][y]!.color = .None
                         Tile.tiles[mode.rawValue]![x][y]!.node!.fillColor = UIColor.whiteColor()
@@ -582,6 +581,7 @@ class Grid: SKScene {
     
     func releaseChain() {
         if (chain != nil) {
+            record?.chain(chain!.count)
             Tile.save += 1
             if (Tile.save >= 6) {
                 saveAll()
@@ -631,11 +631,9 @@ class Grid: SKScene {
                 if (Challenge.challenge != nil) {
                     Challenge.challenge!.chain(chain!.count)
                 }
-                if (Challenge.challenge != nil) {
-                    Challenge.challenge!.points(increase)
-                }
                 Grid.xp += increase
                 Grid.points += increase
+                pointsSoFar += increase
                 swaps = max(swaps-(t/3),0)
                 var pus: [(Tile.SpecialType, Tile.Color, Int, Int)] = []
                 for (x, y, _) in chain! {
@@ -645,6 +643,7 @@ class Grid: SKScene {
                         if (Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard) {
                             Grid.xp += 24
                             Grid.points += 24
+                            pointsSoFar += 24
                         }
                         Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
                         Tile.tiles[mode.rawValue]![x][y] = nil
@@ -655,6 +654,7 @@ class Grid: SKScene {
                             pus.append((t,c, x, y))
                             Grid.xp += 12
                             Grid.points += 12
+                            pointsSoFar += 12
                         }
                     }
                 }
@@ -992,24 +992,32 @@ class Grid: SKScene {
         Grid.xp = min(max(Grid.xp-Grid.maxXP(),0),288)
         Grid.level = min(Grid.level+1,Grid.maxLevel)
         Grid.newUpgrade(Grid.level)
-        deaths = 0
         if (Grid.level <= 0) {
             Grid.display.main = "Tutorial \(Grid.level+3)"
         } else {
             Grid.display.main = Grid.level == Grid.maxLevel ? "Level \(Grid.level) (MAX)" : "Level \(Grid.level)"
         }
+        Challenge.challenge?.points(pointsSoFar)
         reset()
         saveAll()
     }
     
     func die() {
         Grid.xp = max(Grid.xp-Tile.rg((864,2048)),0)
-        Grid.display.main = "You Died"
-        Grid.display.sub = "Points: \(Grid.points)"
-        deaths += 1
-        if (Challenge.challenge != nil) {
-            Challenge.challenge!.die()
+        if (mode == .Standard) {
+            Grid.display.main = "You Died"
+        } else if (mode == .Moves) {
+            Grid.display.main = "Round Complete"
+        } else if (mode == .Timed) {
+            Grid.display.main = "Game Over"
         }
+        Grid.display.sub = "Score: \(pointsSoFar)\(pointsSoFar > record!.points ? " (High Score)" : "")"
+        Challenge.challenge?.points(pointsSoFar)
+        record?.points(pointsSoFar)
+        if (mode != .Moves) {
+            Challenge.challenge?.die()
+        }
+        pointsSoFar = 0
         reset()
         saveAll()
     }
@@ -1033,13 +1041,12 @@ class Grid: SKScene {
             energyBar?.clearBar()
             xpBar = nil
             energyBar = nil
-        } else {
-            GameViewController.cont?.performSegueWithIdentifier("pause", sender: nil)
         }
         Challenge.challenge?.check()
         clearChain()
         frames = 0
         Grid.lc = true
+        GameViewController.cont?.performSegueWithIdentifier("pause", sender: nil)
     }
     
     func restore() {
@@ -1091,6 +1098,7 @@ class Grid: SKScene {
     
     func update() {
         if (running) {
+            Challenge.challenge?.points(pointsSoFar)
             var i = 0
             if (Grid.level < Grid.maxLevel && Grid.level > 0) {
                 if (xpBar == nil) {

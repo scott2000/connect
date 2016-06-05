@@ -32,7 +32,7 @@ class Challenge {
                 Challenge.lastChallenge = NSDate()
                 var i = 0
                 var g: Goal? = nil
-                switch(arc4random_uniform(Int(arc4random_uniform(2)) == 1 ? 6 : 5)) {
+                switch(arc4random_uniform(Int(arc4random_uniform(2)) == 1 ? 5 : 4)) {
                 case 0:
                     g = .Tiles(Tile.Color(rawValue: Int(arc4random_uniform(UInt32(Tile.maxColors))))!)
                     i = Tile.rg((180,216))
@@ -45,9 +45,6 @@ class Challenge {
                 case 3:
                     g = .Chain
                     i = Tile.rg((16,24))
-                case 4:
-                    g = .Swaps
-                    i = Tile.rg((60,96))
                 case 5:
                     g = .Survive
                     i = Tile.rg((90,150))
@@ -299,7 +296,7 @@ class Challenge {
     func points(points: Int) {
         switch (goal) {
         case .Points:
-            progress += points
+            progress = points
             check()
         default:
             return

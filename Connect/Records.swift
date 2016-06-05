@@ -29,12 +29,14 @@ class Records {
     
     func chain(length: Int) {
         if (length > chain) {
+            print("Chain Record: \(length)")
             chain = length
         }
     }
     
     func points(amount: Int) {
         if (amount > points) {
+            print("Points Record: \(amount)")
             points = amount
         }
     }

@@ -69,7 +69,6 @@ class Bar {
     }
     
     func createBar() {
-        print("Bar\(max).createBar()")
         back.position = position
         back.position.x += CGFloat(width/2)
         back.zPosition = -288
@@ -126,7 +125,6 @@ class Bar {
     }
     
     func clearBar() {
-        print("Bar\(max).clearBar()")
         back.removeFromParent()
         separator.removeFromParent()
         front.removeFromParent()

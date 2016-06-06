@@ -669,7 +669,7 @@ class Grid: SKScene {
                         if (Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard) {
                             Grid.xp += 60
                             Grid.points += 60
-                            pointsSoFar += 60```````
+                            pointsSoFar += 60
                         }
                         Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
                         Tile.tiles[mode.rawValue]![x][y] = nil

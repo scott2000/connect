@@ -20,6 +20,7 @@ class Challenge {
     var best = 0
     var progress = 0
     var color: UIColor
+    var completed = false
     
     static func remove() {
         challenge = nil
@@ -205,12 +206,14 @@ class Challenge {
     }
     
     func complete() {
+        completed = true
         if (daily) {
             Tile.cooldown = Tile.rg((-432,-288))
             let increase = Tile.rg((2592,7776))
             print("Daily Challenge Completed: +\(increase) XP")
             Grid.xp += increase
             Grid.points += increase
+            Grid.active?.update()
             Grid.active?.pause("Daily Challenge Done", "+\(increase) XP")
             let notification = UILocalNotification()
             notification.alertBody = "New Daily Challenge Available"
@@ -224,6 +227,7 @@ class Challenge {
             print("Challenge Completed: +\(increase) XP")
             Grid.xp += increase
             Grid.points += increase
+            Grid.active?.update()
             Grid.active?.pause("Challenge Done", "+\(increase) XP")
         }
         Challenge.remove()
@@ -232,7 +236,9 @@ class Challenge {
     func check() {
         best = max(progress,best)
         if (progress >= total) {
-            complete()
+            if (!completed) {
+                complete()
+            }
         } else {
             if (Grid.active != nil && Challenge.bar[Grid.active!.mode.rawValue] == nil) {
                 Challenge.bar[Grid.active!.mode.rawValue] = Bar(current: progress, max: total, color: color, index: -1, text: (daily ? "DAILY: " : "") + goal.text(progress, best: best, total: total), grid: Grid.active)

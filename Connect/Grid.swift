@@ -693,9 +693,6 @@ class Grid: SKScene {
                         }
                     }
                 }
-                for (a,b,x,y) in pus {
-                    runPowerup(a.rawValue, color: b.rawValue, x, y)
-                }
                 sh = false
                 if (energy <= Grid.moveEnergy*3 && mode == .Moves && energy > 0) {
                     Grid.timeSound?.play()
@@ -705,6 +702,9 @@ class Grid: SKScene {
                     } else {
                         Grid.moveSound?.play()
                     }
+                }
+                for (a,b,x,y) in pus {
+                    runPowerup(a.rawValue, color: b.rawValue, x, y)
                 }
                 if (Challenge.challenge != nil) {
                     Challenge.challenge!.check()

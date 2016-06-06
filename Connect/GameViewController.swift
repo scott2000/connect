@@ -65,8 +65,6 @@ class GameViewController: UIViewController {
         Grid.setMode(mode)
         if (mode == .Standard && Grid.level < 1) {
             GameViewController.mode = "Tutorial"
-        } else if (Grid.modes == 1) {
-            GameViewController.mode = "Resume"
         } else {
             GameViewController.mode = String(mode)
         }

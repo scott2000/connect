@@ -462,7 +462,7 @@ class Grid: SKScene {
             if (!sh) {
                 sh = true
                 shuffle()
-                let i = 48
+                let i = 1024
                 Grid.xp += i
                 Grid.points += i
                 pointsSoFar += i
@@ -472,7 +472,7 @@ class Grid: SKScene {
             for x in max(xb-3,0)..<min(xb+3,Tile.width) {
                 for y in max(yb-3,0)..<min(yb+3,Tile.height) {
                     if (Tile.tiles[mode.rawValue]![x][y] != nil && distance(from: CGPoint(x: x, y: y), to: CGPoint(x: xb, y: yb)) <= 2.75) {
-                        let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 36 : 9
+                        let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 72 : 60
                         Grid.xp += i
                         Grid.points += i
                         pointsSoFar += i
@@ -481,9 +481,9 @@ class Grid: SKScene {
                             Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
                         }
                         if (t != .Normal && t != .Wildcard) {
-                            Grid.xp += 18
-                            Grid.points += 18
-                            pointsSoFar += 18
+                            Grid.xp += 24
+                            Grid.points += 24
+                            pointsSoFar += 24
                             pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                         }
                         Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -499,17 +499,17 @@ class Grid: SKScene {
             for x in 0..<Tile.width {
                 for y in 0..<Tile.height {
                     if (Tile.tiles[mode.rawValue]![x][y] != nil && Tile.tiles[mode.rawValue]![x][y]!.color == color && Tile.tiles[mode.rawValue]![x][y]!.type != .Wildcard) {
-                        Grid.xp += 9
-                        Grid.points += 9
-                        pointsSoFar += 9
+                        Grid.xp += 60
+                        Grid.points += 60
+                        pointsSoFar += 60
                         let t = Tile.tiles[mode.rawValue]![x][y]!.type
                         if (Challenge.challenge != nil) {
                             Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
                         }
                         if (t != .Normal && t != .Wildcard && t != .ClearColor) {
-                            Grid.xp += 18
-                            Grid.points += 18
-                            pointsSoFar += 18
+                            Grid.xp += 24
+                            Grid.points += 24
+                            pointsSoFar += 24
                             pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                         }
                         Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -525,7 +525,7 @@ class Grid: SKScene {
             let x = xb
             for y in 0..<Tile.height {
                 if (Tile.tiles[mode.rawValue]![x][y] != nil) {
-                    let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 36 : 9
+                    let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 72 : 60
                     Grid.xp += i
                     Grid.points += i
                     pointsSoFar += i
@@ -534,9 +534,9 @@ class Grid: SKScene {
                         Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
                     }
                     if (t != .Normal && t != .Wildcard) {
-                        Grid.xp += 18
-                        Grid.points += 18
-                        pointsSoFar += 18
+                        Grid.xp += 24
+                        Grid.points += 24
+                        pointsSoFar += 24
                         pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                     }
                     Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -546,7 +546,7 @@ class Grid: SKScene {
             let y = yb
             for x in 0..<Tile.width {
                 if (Tile.tiles[mode.rawValue]![x][y] != nil) {
-                    let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 36 : 9
+                    let i = Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard ? 72 : 60
                     Grid.xp += i
                     Grid.points += i
                     pointsSoFar += i
@@ -555,9 +555,9 @@ class Grid: SKScene {
                         Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
                     }
                     if (t != .Normal && t != .Wildcard) {
-                        Grid.xp += 18
-                        Grid.points += 18
-                        pointsSoFar += 18
+                        Grid.xp += 24
+                        Grid.points += 24
+                        pointsSoFar += 24
                         pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                     }
                     Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -568,6 +568,9 @@ class Grid: SKScene {
                 runPowerup(a.rawValue, color: b.rawValue, x, y)
             }
         case .EnergyBoost:
+            Grid.xp += 72
+            Grid.points += 72
+            pointsSoFar += 72
             if (mode == .Moves) {
                 freezeMoves += 6
             } else {
@@ -578,7 +581,7 @@ class Grid: SKScene {
             for x in 0..<Tile.width {
                 for y in 0..<Tile.height {
                     if (Tile.tiles[mode.rawValue]![x][y] != nil && Tile.tiles[mode.rawValue]![x][y]!.type == .Normal && Int(arc4random_uniform(11)) <= 1) {
-                        let i = 6
+                        let i = 72
                         Grid.xp += i
                         Grid.points += i
                         pointsSoFar += i
@@ -664,9 +667,9 @@ class Grid: SKScene {
                         let t = Tile.tiles[mode.rawValue]![x][y]!.type
                         let c = Tile.tiles[mode.rawValue]![x][y]!.color
                         if (Tile.tiles[mode.rawValue]![x][y]!.type == .Wildcard) {
-                            Grid.xp += 24
-                            Grid.points += 24
-                            pointsSoFar += 24
+                            Grid.xp += 60
+                            Grid.points += 60
+                            pointsSoFar += 60```````
                         }
                         Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
                         Tile.tiles[mode.rawValue]![x][y] = nil
@@ -675,9 +678,9 @@ class Grid: SKScene {
                         }
                         if (t != .Wildcard && t != .Normal) {
                             pus.append((t,c, x, y))
-                            Grid.xp += 12
-                            Grid.points += 12
-                            pointsSoFar += 12
+                            Grid.xp += 24
+                            Grid.points += 24
+                            pointsSoFar += 24
                         }
                     }
                 }

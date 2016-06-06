@@ -1067,6 +1067,7 @@ class Grid: SKScene {
         if (Grid.level <= 1) {
             Grid.xp = 0
         }
+        Challenge.bar = [:]
         reset()
     }
     

@@ -33,7 +33,9 @@ class Grid: SKScene {
     static var display: (main: String, sub: String) = (main: "nil", sub: "nil")
     static var newPowerup = false
     static var active: Grid?
-    static let moveSound = SoundPlayer.getSound("Move")
+    static let swapSound = SoundPlayer.getSound("Swap")
+    static let chainSound = SoundPlayer.getSound("Chain")
+    static let menuSound = SoundPlayer.getSound("Menu")
     static let powerupSound = SoundPlayer.getSound("Powerup")
     static let dieSound = SoundPlayer.getSound("Die")
     static let winSound = SoundPlayer.getSound("Win")
@@ -275,7 +277,7 @@ class Grid: SKScene {
             gridPaused = true
             Grid.display.main = main ?? "Paused"
             Grid.display.sub = sub ?? "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
-            Grid.moveSound?.play()
+            Grid.menuSound?.play()
             reset()
         }
     }
@@ -639,7 +641,7 @@ class Grid: SKScene {
                     if (energy <= (mode == .Moves ? Grid.moveEnergy*3 : Grid.energyThreshold) && mode != .Timed && energy > 0) {
                         Grid.timeSound?.play()
                     } else if (energy > 0) {
-                        Grid.moveSound?.play()
+                        Grid.swapSound?.play()
                     }
                     if (Challenge.challenge != nil) {
                         Challenge.challenge!.swap()
@@ -700,7 +702,7 @@ class Grid: SKScene {
                     if (pus.count > 0) {
                         Grid.powerupSound?.play()
                     } else {
-                        Grid.moveSound?.play()
+                        Grid.chainSound?.play()
                     }
                 }
                 for (a,b,x,y) in pus {

@@ -41,17 +41,17 @@ class GameViewController: UIViewController {
     @IBOutlet weak var ModeLabel: UILabel!
     
     @IBAction func dismissAnimated(sender: UIButton) {
-        Grid.moveSound?.play()
+        Grid.menuSound?.play()
         dismissViewControllerAnimated(true, completion: nil)
     }
     
     @IBAction func dismiss(sender: UIButton) {
-        Grid.moveSound?.play()
+        Grid.menuSound?.play()
         dismissViewControllerAnimated(false, completion: nil)
     }
     
     @IBAction func main(sender: UIButton) {
-        Grid.moveSound?.play()
+        Grid.menuSound?.play()
         GameViewController.mcont?.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -60,7 +60,7 @@ class GameViewController: UIViewController {
     }
     
     @IBAction func ModePress(sender: Button) {
-        Grid.moveSound?.play()
+        Grid.menuSound?.play()
         let mode = Grid.Mode(rawValue: sender.tag) ?? .Standard
         Grid.setMode(mode)
         if (mode == .Standard && Grid.level < 1) {
@@ -72,7 +72,7 @@ class GameViewController: UIViewController {
     }
     
     @IBAction func DifficultyPress(sender: Button) {
-        Grid.moveSound?.play()
+        Grid.menuSound?.play()
         Grid.active!.diff = Grid.Difficulty(rawValue: -(sender.tag+1))!
         print("Difficulty: \(Grid.active!.diff)")
     }

@@ -58,6 +58,7 @@ class Grid: SKScene {
     var energyBar: Bar?
     var pointsSoFar = 0
     var record: Records?
+    var sh = false
     
     static func create(size: CGSize) {
         if (grids.count == 0) {
@@ -458,11 +459,14 @@ class Grid: SKScene {
         let color = Tile.Color(rawValue: color1)!
         switch (type) {
         case .Shuffle:
-            shuffle()
-            let i = 48
-            Grid.xp += i
-            Grid.points += i
-            pointsSoFar += i
+            if (!sh) {
+                sh = true
+                shuffle()
+                let i = 48
+                Grid.xp += i
+                Grid.points += i
+                pointsSoFar += i
+            }
         case .Explode:
             var pus: [(Tile.SpecialType, Tile.Color, Int, Int)] = []
             for x in max(xb-3,0)..<min(xb+3,Tile.width) {
@@ -680,6 +684,7 @@ class Grid: SKScene {
                 for (a,b,x,y) in pus {
                     runPowerup(a.rawValue, color: b.rawValue, x, y)
                 }
+                sh = false
                 if (Challenge.challenge != nil) {
                     Challenge.challenge!.check()
                 }

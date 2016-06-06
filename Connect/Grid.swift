@@ -110,7 +110,10 @@ class Grid: SKScene {
             for n in grids.keys {
                 let g = grids[n]
                 g?.loadAll(lastVersion)
+                active = g
+                g?.saveAll()
             }
+            active = nil
         }
     }
     

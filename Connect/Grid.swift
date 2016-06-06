@@ -638,14 +638,14 @@ class Grid: SKScene {
                     }
                     movePoint(from: (chain!.first!.0,chain!.first!.1), to: (chain!.last!.0,chain!.last!.1))
                     clearChain()
-                    if (energy <= (mode == .Moves ? Grid.moveEnergy*3 : Grid.energyThreshold) && mode != .Timed && energy > 0) {
-                        Grid.timeSound?.play()
-                    } else if (energy > 0) {
-                        Grid.swapSound?.play()
+                    if (energy > 0 && (Challenge.challenge == nil || !Challenge.challenge!.completed)) {
+                        if (energy <= (mode == .Moves ? Grid.moveEnergy*3 : Grid.energyThreshold) && mode != .Timed) {
+                            Grid.timeSound?.play()
+                        } else {
+                            Grid.swapSound?.play()
+                        }
                     }
-                    if (Challenge.challenge != nil) {
-                        Challenge.challenge!.swap()
-                    }
+                    Challenge.challenge?.swap()
                     return
                 }
             } else if (chain!.count > 2 && (inf == 0 || diff != .Hard)) {
@@ -696,15 +696,6 @@ class Grid: SKScene {
                     }
                 }
                 sh = false
-                if (energy <= Grid.moveEnergy*3 && mode == .Moves && energy > 0) {
-                    Grid.timeSound?.play()
-                } else if (energy > 0) {
-                    if (pus.count > 0) {
-                        Grid.powerupSound?.play()
-                    } else {
-                        Grid.chainSound?.play()
-                    }
-                }
                 for (a,b,x,y) in pus {
                     runPowerup(a.rawValue, color: b.rawValue, x, y)
                 }
@@ -713,6 +704,15 @@ class Grid: SKScene {
                 }
                 if (Challenge.challenge != nil && chain != nil) {
                     Challenge.challenge!.chain(chain!.count)
+                }
+                if (energy <= Grid.moveEnergy*3 && mode == .Moves && energy > 0) {
+                    Grid.timeSound?.play()
+                } else if (energy > 0 && (Challenge.challenge == nil || !Challenge.challenge!.completed)) {
+                    if (pus.count > 0) {
+                        Grid.powerupSound?.play()
+                    } else {
+                        Grid.chainSound?.play()
+                    }
                 }
             }
             clearChain()

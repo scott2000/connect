@@ -221,7 +221,7 @@ class GameViewController: UIViewController {
             }
         }
         if (PointsLabel != nil) {
-            PointsLabel.text = "\(GameViewController.number(Grid.points)) Points"
+            PointsLabel.text = "\(GameViewController.number(Grid.points)) \(Grid.points >= 10_000_000 ? "XP" : "Points")"
         }
         if (ModeLabel != nil) {
             ModeLabel.text = GameViewController.mode

@@ -211,7 +211,7 @@ class Challenge {
             print("Daily Challenge Completed: +\(increase) XP")
             Grid.xp += increase
             Grid.points += increase
-            
+            Grid.active?.pause("Daily Challenge Completed", "+\(increase) XP")
             let notification = UILocalNotification()
             notification.alertBody = "New Daily Challenge Available"
             notification.alertAction = "open"
@@ -224,6 +224,7 @@ class Challenge {
             print("Challenge Completed: +\(increase) XP")
             Grid.xp += increase
             Grid.points += increase
+            Grid.active?.pause("Challenge Completed", "+\(increase) XP")
         }
         Challenge.remove()
     }

@@ -266,9 +266,17 @@ class Grid: SKScene {
     }
     
     func pause() {
+        pause(nil, nil)
+    }
+    
+    func pause(main: String?, _ sub: String?) {
         saveAll()
         if (running) {
-            forcePause()
+            gridPaused = true
+            Grid.display.main = main ?? "Paused"
+            Grid.display.sub = sub ?? "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
+            Grid.moveSound?.play()
+            reset()
         }
     }
     
@@ -337,14 +345,6 @@ class Grid: SKScene {
             i += 1
         }
         return (level, xp)
-    }
-    
-    func forcePause() {
-        gridPaused = true
-        Grid.display.main = "Paused"
-        Grid.display.sub = "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
-        Grid.moveSound?.play()
-        reset()
     }
     
     static func getColor(color: Int) -> UIColor {
@@ -623,9 +623,6 @@ class Grid: SKScene {
                     } else if (Grid.level == 0) {
                         makeLabel("If You Run Out of Energy, You Lose")
                     }
-                    if (Challenge.challenge != nil) {
-                        Challenge.challenge!.swap()
-                    }
                     if (freezeMoves == 0) {
                         if (mode != .Moves) {
                             energy = max(energy-(6*((mode == .Timed) ? 4 : 6)),0)
@@ -643,6 +640,9 @@ class Grid: SKScene {
                         Grid.timeSound?.play()
                     } else if (energy > 0) {
                         Grid.moveSound?.play()
+                    }
+                    if (Challenge.challenge != nil) {
+                        Challenge.challenge!.swap()
                     }
                     return
                 }
@@ -665,9 +665,6 @@ class Grid: SKScene {
                     lastTime = NSDate().timeIntervalSince1970
                 } else if (mode == .Moves) {
                     energy = max(energy-Grid.moveEnergy,0)
-                }
-                if (Challenge.challenge != nil) {
-                    Challenge.challenge!.chain(chain!.count)
                 }
                 Grid.xp += increase
                 Grid.points += increase
@@ -700,9 +697,6 @@ class Grid: SKScene {
                     runPowerup(a.rawValue, color: b.rawValue, x, y)
                 }
                 sh = false
-                if (Challenge.challenge != nil) {
-                    Challenge.challenge!.check()
-                }
                 if (energy <= Grid.moveEnergy*3 && mode == .Moves && energy > 0) {
                     Grid.timeSound?.play()
                 } else if (energy > 0) {
@@ -711,6 +705,12 @@ class Grid: SKScene {
                     } else {
                         Grid.moveSound?.play()
                     }
+                }
+                if (Challenge.challenge != nil) {
+                    Challenge.challenge!.check()
+                }
+                if (Challenge.challenge != nil) {
+                    Challenge.challenge!.chain(chain!.count)
                 }
             }
             clearChain()
@@ -1047,7 +1047,6 @@ class Grid: SKScene {
         if (Grid.level <= 1) {
             Grid.xp = 0
         }
-        Challenge.challenge?.points(pointsSoFar)
         reset()
     }
     
@@ -1062,7 +1061,6 @@ class Grid: SKScene {
             Grid.display.main = "Game Over"
         }
         Grid.display.sub = "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
-        Challenge.challenge?.points(pointsSoFar)
         record?.points(pointsSoFar)
         if (mode != .Moves) {
             Challenge.challenge?.die()
@@ -1092,7 +1090,6 @@ class Grid: SKScene {
             energyBar = nil
         }
         record?.points(pointsSoFar)
-        Challenge.challenge?.check()
         clearChain()
         frames = 0
         Grid.lc = true

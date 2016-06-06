@@ -35,7 +35,7 @@ class Challenge {
                 var g: Goal? = nil
                 switch(arc4random_uniform(Int(arc4random_uniform(2)) == 1 ? 5 : 4)) {
                 case 0:
-                    g = .Tiles(Tile.Color(rawValue: Int(arc4random_uniform(UInt32(Tile.maxColors))))!)
+                    g = .Tiles(Tile.Color(rawValue: Int(arc4random_uniform(UInt32(Tile.colorsUnlocked))))!)
                     i = Tile.rg((180,216))
                 case 1:
                     g = .Wildcards
@@ -57,9 +57,9 @@ class Challenge {
             } else if (challenge == nil) {
                 var i = 0
                 var g: Goal? = nil
-                switch(arc4random_uniform(Grid.active!.mode == .Timed ? 7 : 6)) {
+                switch(arc4random_uniform(Grid.active!.mode == .Timed || Int(arc4random_uniform(2)) == 1 ? 7 : 6)) {
                 case 0:
-                    g = .Tiles(Tile.Color(rawValue: Int(arc4random_uniform(UInt32(Tile.maxColors))))!)
+                    g = .Tiles(Tile.Color(rawValue: Int(arc4random_uniform(UInt32(Tile.colorsUnlocked))))!)
                     i = Tile.rg((48,72))
                 case 1:
                     g = .Wildcards

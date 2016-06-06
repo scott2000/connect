@@ -278,7 +278,7 @@ class Grid: SKScene {
     
     func pause(main: String?, _ sub: String?) {
         saveAll()
-        if (running) {
+        if (running && !gridPaused) {
             gridPaused = true
             Grid.display.main = main ?? "Paused"
             Grid.display.sub = sub ?? "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"

@@ -204,13 +204,12 @@ class GameViewController: UIViewController {
             MainLabel.text = Grid.display.main
             SubLabel.text = Grid.display.sub
         default:
+            if (!g!.running) {
+                g!.restore()
+            }
             if (g != nil && GameViewController.scene != g) {
                 GameViewController.cont = self
                 GameViewController.scene = g
-                
-                if (!g!.running) {
-                    g!.restore()
-                }
                 
                 let skView = self.view as! SKView
                 

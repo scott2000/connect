@@ -88,6 +88,7 @@ class Challenge {
         } else if (challenge != nil) {
             lastChallenge = NSDate(timeIntervalSince1970: 0)
             challenge = nil
+            bar = [:]
         }
     }
 

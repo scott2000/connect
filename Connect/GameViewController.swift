@@ -70,6 +70,7 @@ class GameViewController: UIViewController {
             Tile.resize(3, 1)
             Tile.powerupsUnlocked = []
             Challenge.challenge = nil
+            Challenge.bar = [:]
             for n in Grid.grids.keys {
                 let g = Grid.grids[n]
                 Grid.active = g

@@ -1217,9 +1217,9 @@ class Grid: SKScene {
             }
             if (Grid.level >= 0) {
                 if (energyBar == nil) {
-                    energyBar = Bar(current: energy, max: Grid.maxEnergy, color: energy <= Grid.energyThreshold ? Tile.getColor(.Orange) : Tile.getColor(.Yellow), index: i, text: nil, grid: self)
+                    energyBar = Bar(current: energy, max: Grid.maxEnergy, color: energy <= Grid.energyThreshold ? energy < Grid.energyThreshold/2 ? Tile.getColor(.Red) :Tile.getColor(.Orange) : Tile.getColor(.Yellow), index: i, text: nil, grid: self)
                 } else {
-                    energyBar!.updateBar(energy, color: energy <= Grid.energyThreshold ? Tile.getColor(.Orange) : Tile.getColor(.Yellow))
+                    energyBar!.updateBar(energy, color: energy <= Grid.energyThreshold ? energy < Grid.energyThreshold/2 ? Tile.getColor(.Red) : Tile.getColor(.Orange) : Tile.getColor(.Yellow))
                 }
             } else {
                 energyBar?.clearBar()

@@ -95,7 +95,7 @@ class Tile {
         Tile.width = x
         Tile.height = y
         Tile.cooldown = 48
-        for n in 0..<Grid.modes {
+        for n in 0..<Grid.grids.count {
             Grid.grids[Grid.Mode(rawValue: n)!]!.falling = [SKShapeNode?](count: Tile.width, repeatedValue: nil)
             Tile.tiles[n] = [[Tile?]](count: x, repeatedValue: [Tile?](count: y, repeatedValue: nil))
         }

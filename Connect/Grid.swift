@@ -203,6 +203,7 @@ class Grid: SKScene {
             if (findPoint(location) != nil) {
                 move(location)
             } else if (location.y >= size.height-36) {
+                Grid.menuSound?.play()
                 pause()
             }
         }
@@ -277,7 +278,6 @@ class Grid: SKScene {
             gridPaused = true
             Grid.display.main = main ?? "Paused"
             Grid.display.sub = sub ?? "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
-            Grid.menuSound?.play()
             reset()
         }
     }

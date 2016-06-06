@@ -56,6 +56,7 @@ class GameViewController: UIViewController {
     }
     
     @IBAction func PauseGame(sender: UIButton) {
+        Grid.menuSound?.play()
         Grid.active?.pause()
     }
     

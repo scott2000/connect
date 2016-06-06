@@ -647,7 +647,7 @@ class Grid: SKScene {
                         energy = min(max(energy+t3-t2,0),Grid.maxEnergy)
                     }
                 }
-                let increase = max(min(max(Int(exp2(Double(min(t-2,4))))-(swaps*2),0)+t-t2,Grid.maxXP()),0)*getDiff()
+                let increase = max(min(max(Int(exp2(Double(min(t-2,6))))-(swaps*2),0)+t-t2,Grid.maxXP()),0)*getDiff()
                 if (mode != .Standard && freezeMoves > 0) {
                     freezeMoves -= 1
                     lastTime = NSDate().timeIntervalSince1970

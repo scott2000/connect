@@ -21,6 +21,8 @@ class GameViewController: UIViewController {
     @IBOutlet weak var StandardButton: Button!
     @IBOutlet weak var MovesButton: Button!
     
+    @IBOutlet weak var ResetButton: Button!
+    
     @IBOutlet weak var MainLabel: UILabel!
     @IBOutlet weak var SubLabel: UILabel!
     
@@ -53,6 +55,31 @@ class GameViewController: UIViewController {
     @IBAction func main(sender: UIButton) {
         Grid.menuSound?.play()
         GameViewController.mcont?.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    @IBAction func ResetGame(sender: Button) {
+        let alert = UIAlertController(title: "Reset", message: "Are you sure you want to erase all progress? This cannot be undone.", preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Erase", style: .Destructive, handler: { (action) -> Void in
+            Grid.level = -2
+            Grid.xp = 0
+            Grid.modes = 1
+            Grid.diffs = 1
+            Grid.lc = true
+            Grid.newPowerup = false
+            Tile.resize(3, 1)
+            Tile.powerupsUnlocked = []
+            Challenge.challenge = nil
+            for n in Grid.grids.keys {
+                let g = Grid.grids[n]
+                Grid.active = g
+                g?.saveAll(false)
+            }
+            Grid.active = nil
+            Grid.grids = [:]
+            self.prepare()
+        }))
+        presentViewController(alert, animated: true, completion: nil)
     }
     
     @IBAction func PauseGame(sender: UIButton) {
@@ -94,8 +121,7 @@ class GameViewController: UIViewController {
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+    func prepare() {
         Grid.create(CGSize(width: 1024, height: 768))
         let g = Grid.active
         if (title == "Game" && g != nil && GameViewController.scene != g) {
@@ -112,10 +138,10 @@ class GameViewController: UIViewController {
             skView.showsFPS = false
             skView.showsNodeCount = false
             skView.showsDrawCount = false
-    
+            
             /* Sprite Kit applies additional optimizations to improve rendering performance */
             skView.ignoresSiblingOrder = true
-    
+            
             /* Set the scale mode to scale to fit the window */
             Grid.active!.scaleMode = .AspectFill
             
@@ -158,7 +184,7 @@ class GameViewController: UIViewController {
         SubLabel?.text = Grid.display.sub
         if (StandardButton != nil) {
             GameViewController.mcont = self
-            if (Grid.level >= 21) {
+            if (Grid.level >= Grid.maxLevel) {
                 StandardButton.setImage(UIImage(named: "Endless"), forState: .Normal)
                 StandardLabel.text = "Endless"
             } else {
@@ -178,12 +204,19 @@ class GameViewController: UIViewController {
             HardButton.backgroundColor = Tile.getColor(.Blue)
             HardButton.enabled = true
         }
+        if (Grid.level < Grid.maxLevel) {
+            ResetButton?.hidden = true
+        } else {
+            ResetButton?.hidden = false
+        }
         if (CoinsLabel != nil) {
             if (Grid.level <= 0) {
+                CoinsLabel.hidden = false
                 CoinsLabel.text = "Tutorial \(Grid.level+3)"
-            } else if (Grid.level >= 21) {
-                CoinsLabel.text = "Max Level"
+            } else if (Grid.level >= Grid.maxLevel) {
+                CoinsLabel.hidden = true
             } else {
+                CoinsLabel.hidden = false
                 CoinsLabel.text = "Level \(Grid.level)"
             }
         }
@@ -193,6 +226,11 @@ class GameViewController: UIViewController {
         if (ModeLabel != nil) {
             ModeLabel.text = GameViewController.mode
         }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        prepare()
     }
 
     override func shouldAutorotate() -> Bool {

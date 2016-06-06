@@ -114,7 +114,7 @@ class Grid: SKScene {
                 let g = grids[n]
                 g?.loadAll(lastVersion)
                 active = g
-                g?.saveAll()
+                g?.saveAll(false)
             }
             active = nil
         }
@@ -129,10 +129,6 @@ class Grid: SKScene {
             active!.saveAll()
         }
         active = grids[mode]
-    }
-    
-    deinit {
-        saveAll()
     }
     
     init(size: CGSize, mode: Grid.Mode) {
@@ -187,9 +183,17 @@ class Grid: SKScene {
         falling = [SKShapeNode?](count: Tile.width, repeatedValue: nil)
     }
     
+    static func saveAll() {
+        saveData([String(level),String(xp),String(points),Challenge.save()], path: basePath+"/\(lvlsys).txt")
+    }
+    
     func saveAll() {
-        Grid.saveData([String(Grid.level),String(Grid.xp),String(Grid.points),Challenge.save()], path: Grid.basePath+"/\(Grid.lvlsys).txt")
-        if (running || gridPaused) {
+        saveAll(true)
+    }
+    
+    func saveAll(grid: Bool) {
+        Grid.saveAll()
+        if (grid && (running || gridPaused)) {
             Grid.saveData([String(energy),String(freezeMoves),record!.save(),Tile.getData(mode),String(swaps),String(pointsSoFar)], path: Grid.basePath+"/\(Grid.lvlsys)-\(mode.rawValue).txt")
         } else {
             Grid.saveData([String(energy),String(freezeMoves),record!.save()], path: Grid.basePath+"/\(Grid.lvlsys)-\(mode.rawValue).txt")

@@ -282,7 +282,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="64" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="orT-lj-Sq4">
-                                <rect key="frame" x="39" y="94" width="296" height="479"/>
+                                <rect key="frame" x="40" y="93" width="296" height="481"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connect" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mha-tH-1bc">
                                         <rect key="frame" x="34" y="0.0" width="228" height="70"/>
@@ -407,25 +407,62 @@
                                             </mask>
                                         </variation>
                                     </view>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="72" translatesAutoresizingMaskIntoConstraints="NO" id="rDw-4l-WW7">
-                                        <rect key="frame" x="53" y="330" width="191" height="21"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rDw-4l-WW7">
+                                        <rect key="frame" x="20" y="327" width="256" height="26"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LEVEL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oac-nl-cPJ">
-                                                <rect key="frame" x="0.0" y="0.0" width="54" height="21"/>
+                                            <button opaque="NO" tag="-7" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8n4-Rl-7wf" customClass="Button" customModule="Connect">
+                                                <rect key="frame" x="0.0" y="0.0" width="108" height="26"/>
+                                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="24" id="Gt6-eH-Ld2"/>
+                                                    <constraint firstAttribute="width" constant="72" id="INA-xh-fvX"/>
+                                                    <constraint firstAttribute="width" constant="108" id="TNo-yt-Ih8"/>
+                                                    <constraint firstAttribute="width" constant="48" id="Wbq-5n-0na"/>
+                                                    <constraint firstAttribute="height" constant="18" id="XUo-Oi-v4z"/>
+                                                    <constraint firstAttribute="height" constant="18" id="eOd-dn-Ai3"/>
+                                                    <constraint firstAttribute="width" constant="45" id="ihf-It-PNH"/>
+                                                    <constraint firstAttribute="height" constant="24" id="mH7-En-lrL"/>
+                                                    <constraint firstAttribute="height" constant="32" id="tKN-Cl-6Zi"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                                <state key="normal" title="Reset Progress">
+                                                    <color key="titleColor" red="0.32941176470588235" green="0.32941176470588235" blue="0.32941176470588235" alpha="1" colorSpace="calibratedRGB"/>
+                                                </state>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="Gt6-eH-Ld2"/>
+                                                        <exclude reference="INA-xh-fvX"/>
+                                                        <exclude reference="Wbq-5n-0na"/>
+                                                        <exclude reference="XUo-Oi-v4z"/>
+                                                        <exclude reference="eOd-dn-Ai3"/>
+                                                        <exclude reference="ihf-It-PNH"/>
+                                                        <exclude reference="mH7-En-lrL"/>
+                                                        <exclude reference="tKN-Cl-6Zi"/>
+                                                    </mask>
+                                                </variation>
+                                                <connections>
+                                                    <action selector="ResetGame:" destination="x6D-7U-tAK" eventType="touchUpInside" id="BIH-HK-GYm"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="LEVEL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oac-nl-cPJ">
+                                                <rect key="frame" x="108" y="0.0" width="54" height="26"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="POINTS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kQK-Yq-CDk">
-                                                <rect key="frame" x="126" y="0.0" width="65" height="21"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="POINTS" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kQK-Yq-CDk">
+                                                <rect key="frame" x="162" y="0.0" width="94" height="26"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="256" id="ftA-eq-cnW"/>
+                                        </constraints>
                                     </stackView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WYj-Vb-0Zj" customClass="SKView">
-                                        <rect key="frame" x="0.0" y="415" width="296" height="64"/>
+                                        <rect key="frame" x="0.0" y="417" width="296" height="64"/>
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="64" id="2Jv-AE-F5w"/>
@@ -473,6 +510,7 @@
                         <outlet property="MovesButton" destination="Ayb-V1-VoH" id="qyw-DZ-NQN"/>
                         <outlet property="MovesLabel" destination="VDP-KB-9yG" id="nod-Qd-h3E"/>
                         <outlet property="PointsLabel" destination="kQK-Yq-CDk" id="USH-QK-5jE"/>
+                        <outlet property="ResetButton" destination="8n4-Rl-7wf" id="6s9-4K-yQh"/>
                         <outlet property="StandardButton" destination="omo-wo-doS" id="2ZB-vj-aFf"/>
                         <outlet property="StandardLabel" destination="KS5-2L-gfB" id="jV9-8E-e9x"/>
                         <outlet property="TimedButton" destination="cXB-c8-XGi" id="wh4-IS-Z5p"/>

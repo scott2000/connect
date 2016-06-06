@@ -17,7 +17,7 @@ class Button: UIButton {
         switch (tag) {
         case 0:
             Grid.create(CGSize(width: 1024, height: 768))
-            if (Grid.level >= 21) {
+            if (Grid.level >= Grid.maxLevel) {
                 setImage(UIImage(named: "Endless"), forState: .Normal)
             } else {
                 setImage(UIImage(named: "Play"), forState: .Normal)
@@ -37,12 +37,12 @@ class Button: UIButton {
         default:
             setImage(nil, forState: .Normal)
         }
-        if (tag != -6) {
+        if (tag > -6) {
             backgroundColor = Tile.getColor(.Blue)
         } else {
             backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
         }
-        layer.cornerRadius = bounds.width/2
+        layer.cornerRadius = min(bounds.width,bounds.height)/2
         clipsToBounds = true
     }
 }

@@ -1057,6 +1057,9 @@ class Grid: SKScene {
     }
     
     func levelUp() {
+        if (mode != .Moves) {
+            energy = Grid.maxEnergy
+        }
         Grid.winSound?.play()
         Grid.xp = min(max(Grid.xp-Grid.maxXP(),0),288)
         Grid.level = min(Grid.level+1,Grid.maxLevel)
@@ -1074,6 +1077,7 @@ class Grid: SKScene {
     }
     
     func die() {
+        energy = Grid.maxEnergy
         Grid.dieSound?.play()
         Grid.xp = max(Grid.xp-Tile.rg((864,2048)),0)
         if (mode == .Standard) {
@@ -1128,7 +1132,6 @@ class Grid: SKScene {
         if (!gridPaused) {
             started = false
             Tile.reset(mode)
-            energy = Grid.maxEnergy
             if (Grid.level == -1) {
                 Tile.tiles[mode.rawValue]![1][0] = Tile(x: 1, y: 0, type: .Wildcard, drop: false, grid: self)
             } else if (Grid.newPowerup) {

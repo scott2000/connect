@@ -125,66 +125,29 @@ class GameViewController: UIViewController {
     func prepare() {
         Grid.create(CGSize(width: 1024, height: 768))
         let g = Grid.active
-        if (title == "Game" && g != nil && GameViewController.scene != g) {
-            GameViewController.cont = self
-            GameViewController.scene = g
-            
-            if (!g!.running) {
-                g!.restore()
-            }
-            
-            let skView = self.view as! SKView
-            
-            // Configure the view.
-            skView.showsFPS = false
-            skView.showsNodeCount = false
-            skView.showsDrawCount = false
-            
-            /* Sprite Kit applies additional optimizations to improve rendering performance */
-            skView.ignoresSiblingOrder = true
-            
-            /* Set the scale mode to scale to fit the window */
-            Grid.active!.scaleMode = .AspectFill
-            
-            skView.presentScene(Grid.active!)
-        } else if (ChallengeView != nil || challengeBar == nil || (Challenge.challenge == nil && challengeBar != nil)) {
-            GameViewController.scene = SKScene(size: CGSize(width: 296, height: 64))
-            GameViewController.scene!.backgroundColor = UIColor.whiteColor()
-            if (Challenge.challenge != nil) {
-                challengeBar = Bar(current: Challenge.challenge!.progress, max: Challenge.challenge!.total, position: CGPoint(x: 1, y: 24), width: 294, color: Challenge.challenge!.color, fontSize: 16, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
-            } else if (Grid.level > 0) {
-                challengeBar = Bar(current: Grid.xp, max: Grid.maxXP(), position: CGPoint(x: 1, y: 24), width: 294, color: Tile.getColor(.Green), fontSize: 16, text: "\(Grid.xp)/\(Grid.maxXP()) XP")
-            } else {
-                challengeBar = nil
-            }
-            ChallengeView?.presentScene(GameViewController.scene)
-        } else if (ChallengeView != nil) {
-            challengeBar!.updateBar(Challenge.challenge!.progress, max: Challenge.challenge!.total, color: Challenge.challenge!.color, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
-        }
-        if (Grid.modes < 3 && MovesButton != nil) {
-            MovesButton.backgroundColor = UIColor.lightGrayColor()
-            MovesButton.enabled = false
-            MovesLabel.text = "Locked"
-        } else if (MovesButton != nil) {
-            MovesButton.backgroundColor = Tile.getColor(.Blue)
-            MovesButton.enabled = true
-            MovesLabel.text = "Moves"
-        }
-        if (Grid.modes < 2 && TimedButton != nil) {
-            TimedButton.backgroundColor = UIColor.lightGrayColor()
-            TimedButton.enabled = false
-            TimedLabel.text = "Locked"
-        } else if (TimedButton != nil) {
-            TimedButton.backgroundColor = Tile.getColor(.Blue)
-            TimedButton.enabled = true
-            TimedLabel.text = "Timed"
-        }
-        HighScoreLabel?.text = "High Score: \(GameViewController.number(Grid.active!.record!.points))"
-        LongestChainLabel?.text = "Longest Chain: \(GameViewController.number(Grid.active!.record!.chain))"
-        MainLabel?.text = Grid.display.main
-        SubLabel?.text = Grid.display.sub
-        if (StandardButton != nil) {
+        let blue = Tile.getColor(.Blue)
+        let gray = UIColor.lightGrayColor()
+        switch (title!) {
+        case "Main":
             GameViewController.mcont = self
+            if (Grid.modes < 3) {
+                MovesButton.backgroundColor = gray
+                MovesButton.enabled = false
+                MovesLabel.text = "Locked"
+            } else {
+                MovesButton.backgroundColor = blue
+                MovesButton.enabled = true
+                MovesLabel.text = "Moves"
+            }
+            if (Grid.modes < 2) {
+                TimedButton.backgroundColor = gray
+                TimedButton.enabled = false
+                TimedLabel.text = "Locked"
+            } else {
+                TimedButton.backgroundColor = blue
+                TimedButton.enabled = true
+                TimedLabel.text = "Timed"
+            }
             if (Grid.level >= Grid.maxLevel) {
                 StandardButton.setImage(UIImage(named: "Endless"), forState: .Normal)
                 StandardLabel.text = "Endless"
@@ -197,20 +160,11 @@ class GameViewController: UIViewController {
                 }
                 
             }
-        }
-        if (Grid.diffs < 2 && HardButton != nil) {
-            HardButton.backgroundColor = UIColor.lightGrayColor()
-            HardButton.enabled = false
-        } else if (HardButton != nil) {
-            HardButton.backgroundColor = Tile.getColor(.Blue)
-            HardButton.enabled = true
-        }
-        if (Grid.level < Grid.maxLevel) {
-            ResetButton?.hidden = true
-        } else {
-            ResetButton?.hidden = false
-        }
-        if (CoinsLabel != nil) {
+            if (Grid.level < Grid.maxLevel) {
+                ResetButton.hidden = true
+            } else {
+                ResetButton.hidden = false
+            }
             if (Grid.level <= 0) {
                 CoinsLabel.hidden = false
                 CoinsLabel.text = "Tutorial \(Grid.level+3)"
@@ -220,12 +174,59 @@ class GameViewController: UIViewController {
                 CoinsLabel.hidden = false
                 CoinsLabel.text = "Level \(Grid.level)"
             }
-        }
-        if (PointsLabel != nil) {
             PointsLabel.text = "\(GameViewController.number(Grid.points)) \(Grid.points >= 10_000_000 ? "XP" : "Points")"
-        }
-        if (ModeLabel != nil) {
+            if (challengeBar == nil || (Challenge.challenge == nil && challengeBar != nil)) {
+                GameViewController.scene = SKScene(size: CGSize(width: 296, height: 64))
+                GameViewController.scene!.backgroundColor = UIColor.whiteColor()
+                if (Challenge.challenge != nil) {
+                    challengeBar = Bar(current: Challenge.challenge!.progress, max: Challenge.challenge!.total, position: CGPoint(x: 1, y: 24), width: 294, color: Challenge.challenge!.color, fontSize: 16, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
+                } else if (Grid.level > 0) {
+                    challengeBar = Bar(current: Grid.xp, max: Grid.maxXP(), position: CGPoint(x: 1, y: 24), width: 294, color: Tile.getColor(.Green), fontSize: 16, text: "\(Grid.xp)/\(Grid.maxXP()) XP")
+                } else {
+                    challengeBar = nil
+                }
+                ChallengeView?.presentScene(GameViewController.scene)
+            } else {
+                challengeBar!.updateBar(Challenge.challenge!.progress, max: Challenge.challenge!.total, color: Challenge.challenge!.color, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
+            }
+        case "Difficulty":
+            HighScoreLabel?.text = "High Score: \(GameViewController.number(Grid.active!.record!.points))"
+            LongestChainLabel?.text = "Longest Chain: \(GameViewController.number(Grid.active!.record!.chain))"
+            if (Grid.diffs < 2) {
+                HardButton.backgroundColor = UIColor.lightGrayColor()
+                HardButton.enabled = false
+            } else {
+                HardButton.backgroundColor = Tile.getColor(.Blue)
+                HardButton.enabled = true
+            }
             ModeLabel.text = GameViewController.mode
+        case "Pause":
+            MainLabel.text = Grid.display.main
+            SubLabel.text = Grid.display.sub
+        default:
+            if (g != nil && GameViewController.scene != g) {
+                GameViewController.cont = self
+                GameViewController.scene = g
+                
+                if (!g!.running) {
+                    g!.restore()
+                }
+                
+                let skView = self.view as! SKView
+                
+                // Configure the view.
+                skView.showsFPS = false
+                skView.showsNodeCount = false
+                skView.showsDrawCount = false
+                
+                /* Sprite Kit applies additional optimizations to improve rendering performance */
+                skView.ignoresSiblingOrder = true
+                
+                /* Set the scale mode to scale to fit the window */
+                Grid.active!.scaleMode = .AspectFill
+                
+                skView.presentScene(Grid.active!)
+            }
         }
     }
     

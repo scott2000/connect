@@ -170,19 +170,19 @@ class Challenge {
         func text(progress: Int, best: Int, total: Int) -> String {
             switch (self) {
             case .Tiles(let c):
-                return "Destroy \(c)s (\(progress)/\(total))"
+                return "Destroy \(c)s (\(GameViewController.number(progress))/\(GameViewController.number(total)))"
             case .Wildcards:
-                return "Use Wildcards (\(progress)/\(total))"
+                return "Use Wildcards (\(GameViewController.number(progress))/\(GameViewController.number(total)))"
             case .Powerups:
-                return "Use Power-Ups (\(progress)/\(total))"
+                return "Use Power-Ups (\(GameViewController.number(progress))/\(GameViewController.number(total)))"
             case .Chain:
-                return "Chain \(total) Tiles (Best: \(best))"
+                return "Chain \(GameViewController.number(total)) Tiles (Best: \(GameViewController.number(best)))"
             case .Swaps:
-                return "Swap Tiles (\(progress)/\(total))"
+                return "Swap Tiles (\(GameViewController.number(progress))/\(GameViewController.number(total)))"
             case .Survive:
-                return "Survive in Timed (\(progress)/\(total))"
+                return "Survive in Timed (\(GameViewController.number(progress))/\(GameViewController.number(total)))"
             case .Points:
-                return "Get Points (\(progress)/\(total))"
+                return "Get Points (\(GameViewController.number(progress))/\(GameViewController.number(total)))"
             }
         }
     }

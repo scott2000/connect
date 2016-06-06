@@ -59,6 +59,7 @@ class Grid: SKScene {
     var pointsSoFar = 0
     var record: Records?
     var sh = false
+    var label: SKLabelNode?
     
     static func create(size: CGSize) {
         if (grids.count == 0) {
@@ -617,6 +618,11 @@ class Grid: SKScene {
                 let a = Tile.tiles[mode.rawValue]![chain![0].0][chain![0].1]!
                 let b = Tile.tiles[mode.rawValue]![chain![1].0][chain![1].1]!
                 if (a.color != b.color || a.type != b.type) {
+                    if (Grid.level == 1) {
+                        deleteLabel()
+                    } else if (Grid.level == 0) {
+                        makeLabel("If You Run Out of Energy, You Lose")
+                    }
                     if (Challenge.challenge != nil) {
                         Challenge.challenge!.swap()
                     }
@@ -641,6 +647,9 @@ class Grid: SKScene {
                     return
                 }
             } else if (chain!.count > 2 && (inf == 0 || diff != .Hard)) {
+                if (Grid.level == 1) {
+                    deleteLabel()
+                }
                 let t2 = (inf+Int(exp2(Double(inf)))-t)/(max(1,mode.rawValue)*2)
                 let t3 = Int(exp2(Double(min(t-2,10))))*(max(1,mode.rawValue)*3)
                 if (mode != .Moves) {
@@ -944,15 +953,13 @@ class Grid: SKScene {
         lc = true
         switch (level) {
         case -1:
-            Grid.xp = 0
-            Tile.setColors(2)
-            Tile.resize(3,2)
-            display.sub = "Swapping"
-        case 0:
-            Grid.xp = 0
             Tile.setColors(1)
             Tile.resize(3,1)
             display.sub = "Wildcards"
+        case 0:
+            Tile.setColors(2)
+            Tile.resize(3,2)
+            display.sub = "Swapping"
         case 1:
             Tile.setColors(3)
             Tile.resize(4,4)
@@ -1037,6 +1044,9 @@ class Grid: SKScene {
         } else {
             Grid.display.main = Grid.level == Grid.maxLevel ? "Level \(Grid.level) (MAX)" : "Level \(Grid.level)"
         }
+        if (Grid.level <= 1) {
+            Grid.xp = 0
+        }
         Challenge.challenge?.points(pointsSoFar)
         reset()
     }
@@ -1099,7 +1109,7 @@ class Grid: SKScene {
             started = false
             Tile.reset(mode)
             energy = Grid.maxEnergy
-            if (Grid.level == 0) {
+            if (Grid.level == -1) {
                 Tile.tiles[mode.rawValue]![1][0] = Tile(x: 1, y: 0, type: .Wildcard, drop: false, grid: self)
             } else if (Grid.newPowerup) {
                 let x = Int(arc4random_uniform(UInt32(Tile.width)))
@@ -1107,7 +1117,7 @@ class Grid: SKScene {
                 Tile.tiles[mode.rawValue]![x][y] = Tile(x: x, y: y, type: Tile.powerupsUnlocked.last!, drop: false, grid: self)
                 Grid.newPowerup = false
             }
-            if (Grid.level != -1) {
+            if (Grid.level != 0) {
                 for x in 0..<Tile.width {
                     for y in 0..<Tile.height {
                         if (Tile.tiles[mode.rawValue]![x][y] == nil) {
@@ -1129,8 +1139,39 @@ class Grid: SKScene {
         Challenge.challenge?.check()
         sc = 0
         Grid.lc = true
+        if (Grid.level <= 1) {
+            if (Grid.level == 1 && Grid.xp == 0) {
+                makeLabel("Fill the Green Bar to Level Up")
+            } else if (Grid.level == -2) {
+                makeLabel("Draw a Line Between the Dots")
+            } else if (Grid.level == -1) {
+                makeLabel("Wildcards Can Be Any Color")
+            } else if (Grid.level == 0) {
+                makeLabel("You Can Swap Dots, But It Takes Energy")
+            }
+        } else {
+            deleteLabel()
+        }
         update()
         saveAll()
+    }
+    
+    func makeLabel(n: String) {
+        if (label === nil) {
+            label = SKLabelNode(fontNamed: Grid.font)
+            addChild(label!)
+        }
+        label!.text = n
+        label!.fontSize = 16
+        label!.hidden = false
+        label!.zPosition = 512
+        label!.fontColor = UIColor.blackColor()
+        label!.position = getPoint(0, Tile.height, gridSize: (1,1), tileSize: (Tile.size,Tile.size), spacing: (Tile.spacing,Tile.spacing), offset: 0)
+    }
+    
+    func deleteLabel() {
+        label?.removeFromParent()
+        label = nil
     }
     
     override func update(currentTime: NSTimeInterval) {
@@ -1151,7 +1192,7 @@ class Grid: SKScene {
             } else {
                 xpBar?.clearBar()
             }
-            if (Grid.level > 0 || Grid.level == -1) {
+            if (Grid.level >= 0) {
                 if (energyBar == nil) {
                     energyBar = Bar(current: energy, max: Grid.maxEnergy, color: Tile.getColor(.Yellow), index: i, text: nil, grid: self)
                 } else {

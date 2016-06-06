@@ -25,7 +25,7 @@ class Bar {
     var label: SKLabelNode?
     var u: Double
     
-    init(current: Int, max: Int, position: CGPoint, width: Int, color: UIColor, fontSize fs: CGFloat, text: String) {
+    init(current: Int, max: Int, position: CGPoint, width: Int, color: UIColor, fontSize fs: CGFloat, text: String?) {
         scene = GameViewController.scene
         self.text = text
         self.fs = fs

@@ -65,8 +65,8 @@ class GameViewController: UIViewController {
         Grid.setMode(mode)
         if (mode == .Standard && Grid.level < 1) {
             GameViewController.mode = "Tutorial"
-        } else if (mode == .Standard && Grid.level >= 21) {
-            GameViewController.mode = "Endless"
+        } else if (Grid.modes == 1) {
+            GameViewController.mode = "Resume"
         } else {
             GameViewController.mode = String(mode)
         }
@@ -126,6 +126,8 @@ class GameViewController: UIViewController {
             GameViewController.scene!.backgroundColor = UIColor.whiteColor()
             if (Challenge.challenge != nil) {
                 challengeBar = Bar(current: Challenge.challenge!.progress, max: Challenge.challenge!.total, position: CGPoint(x: 1, y: 24), width: 294, color: Challenge.challenge!.color, fontSize: 16, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
+            } else if (Grid.level > 0) {
+                challengeBar = Bar(current: Grid.xp, max: Grid.maxXP(), position: CGPoint(x: 1, y: 24), width: 294, color: Tile.getColor(.Green), fontSize: 16, text: "\(GameViewController.number(Grid.xp))/\(GameViewController.number(Grid.maxXP())) XP")
             } else {
                 challengeBar = nil
             }

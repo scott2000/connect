@@ -75,7 +75,7 @@ class Challenge {
                     i = Tile.rg((18,36))
                 case 5:
                     g = .Points
-                    i = Tile.rg((1000,4000))
+                    i = Tile.rg((7500,12500))
                 case 6:
                     g = .Survive
                     i = Tile.rg((60,90))

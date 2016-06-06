@@ -709,7 +709,7 @@ class Grid: SKScene {
                 if (Challenge.challenge != nil) {
                     Challenge.challenge!.check()
                 }
-                if (Challenge.challenge != nil) {
+                if (Challenge.challenge != nil && chain != nil) {
                     Challenge.challenge!.chain(chain!.count)
                 }
             }

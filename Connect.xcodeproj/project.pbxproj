@@ -12,11 +12,12 @@
 		D23C25C11D01C4DE00AF4463 /* Bar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23C25C01D01C4DE00AF4463 /* Bar.swift */; };
 		D25D8F591CF6272C00C7B008 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25D8F581CF6272C00C7B008 /* Tile.swift */; };
 		D28CEF1E1D04561C0066727E /* Records.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28CEF1D1D04561C0066727E /* Records.swift */; };
-		D28CEF231D04B5DC0066727E /* Time.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF1F1D04B5DC0066727E /* Time.wav */; };
 		D28CEF251D04B5DC0066727E /* Die.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF211D04B5DC0066727E /* Die.wav */; };
 		D28CEF281D04BF610066727E /* Move.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF271D04BF610066727E /* Move.wav */; };
 		D28CEF2A1D04CD460066727E /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28CEF291D04CD460066727E /* SoundPlayer.swift */; };
 		D28CEF2C1D04E32A0066727E /* Win.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF2B1D04E32A0066727E /* Win.wav */; };
+		D28CEF2E1D04FAC50066727E /* Powerup.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF2D1D04FAC50066727E /* Powerup.wav */; };
+		D28CEF301D04FC660066727E /* Time.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF2F1D04FC660066727E /* Time.wav */; };
 		D2BDF0651CE8CE5C0091DDF1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2BDF0641CE8CE5C0091DDF1 /* AppDelegate.swift */; };
 		D2BDF06B1CE8CE5C0091DDF1 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2BDF06A1CE8CE5C0091DDF1 /* GameViewController.swift */; };
 		D2BDF06E1CE8CE5C0091DDF1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2BDF06C1CE8CE5C0091DDF1 /* Main.storyboard */; };
@@ -50,11 +51,12 @@
 		D23C25C01D01C4DE00AF4463 /* Bar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bar.swift; sourceTree = "<group>"; };
 		D25D8F581CF6272C00C7B008 /* Tile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
 		D28CEF1D1D04561C0066727E /* Records.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Records.swift; sourceTree = "<group>"; };
-		D28CEF1F1D04B5DC0066727E /* Time.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Time.wav; sourceTree = "<group>"; };
 		D28CEF211D04B5DC0066727E /* Die.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Die.wav; sourceTree = "<group>"; };
 		D28CEF271D04BF610066727E /* Move.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Move.wav; sourceTree = "<group>"; };
 		D28CEF291D04CD460066727E /* SoundPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
 		D28CEF2B1D04E32A0066727E /* Win.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Win.wav; sourceTree = "<group>"; };
+		D28CEF2D1D04FAC50066727E /* Powerup.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Powerup.wav; sourceTree = "<group>"; };
+		D28CEF2F1D04FC660066727E /* Time.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Time.wav; sourceTree = "<group>"; };
 		D2BDF0611CE8CE5C0091DDF1 /* Connect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Connect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2BDF0641CE8CE5C0091DDF1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D2BDF06A1CE8CE5C0091DDF1 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -132,9 +134,10 @@
 				D2BDF0711CE8CE5C0091DDF1 /* LaunchScreen.storyboard */,
 				D2BDF06F1CE8CE5C0091DDF1 /* Assets.xcassets */,
 				D28CEF271D04BF610066727E /* Move.wav */,
+				D28CEF2F1D04FC660066727E /* Time.wav */,
+				D28CEF2D1D04FAC50066727E /* Powerup.wav */,
 				D28CEF2B1D04E32A0066727E /* Win.wav */,
 				D28CEF211D04B5DC0066727E /* Die.wav */,
-				D28CEF1F1D04B5DC0066727E /* Time.wav */,
 				D2BDF0741CE8CE5C0091DDF1 /* Info.plist */,
 			);
 			path = Connect;
@@ -264,12 +267,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				D28CEF281D04BF610066727E /* Move.wav in Resources */,
+				D28CEF2E1D04FAC50066727E /* Powerup.wav in Resources */,
 				D2BDF0731CE8CE5C0091DDF1 /* LaunchScreen.storyboard in Resources */,
+				D28CEF301D04FC660066727E /* Time.wav in Resources */,
 				D28CEF2C1D04E32A0066727E /* Win.wav in Resources */,
 				D2BDF0701CE8CE5C0091DDF1 /* Assets.xcassets in Resources */,
 				D28CEF251D04B5DC0066727E /* Die.wav in Resources */,
 				D2BDF06E1CE8CE5C0091DDF1 /* Main.storyboard in Resources */,
-				D28CEF231D04B5DC0066727E /* Time.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

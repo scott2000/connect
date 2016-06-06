@@ -34,6 +34,7 @@ class Grid: SKScene {
     static var newPowerup = false
     static var active: Grid?
     static let moveSound = SoundPlayer.getSound("Move")
+    static let powerupSound = SoundPlayer.getSound("Powerup")
     static let dieSound = SoundPlayer.getSound("Die")
     static let winSound = SoundPlayer.getSound("Win")
     static let timeSound = SoundPlayer.getSound("Time")
@@ -96,6 +97,8 @@ class Grid: SKScene {
             for i in -1...level {
                 newUpgrade(i)
             }
+        } else {
+            Tile.setColors(1)
         }
         if (lastVersion == lvlsys) {
             for n in grids.keys {
@@ -683,7 +686,11 @@ class Grid: SKScene {
                 if (energy <= Grid.moveEnergy*3 && mode == .Moves && energy > 0) {
                     Grid.timeSound?.play()
                 } else if (energy > 0) {
-                    Grid.moveSound?.play()
+                    if (pus.count > 0) {
+                        Grid.powerupSound?.play()
+                    } else {
+                        Grid.moveSound?.play()
+                    }
                 }
             }
             clearChain()

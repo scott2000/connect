@@ -63,7 +63,13 @@ class GameViewController: UIViewController {
         Grid.moveSound?.play()
         let mode = Grid.Mode(rawValue: sender.tag) ?? .Standard
         Grid.setMode(mode)
-        GameViewController.mode = String(mode)
+        if (mode == .Standard && Grid.level < 1) {
+            GameViewController.mode = "Tutorial"
+        } else if (mode == .Standard && Grid.level >= 21) {
+            GameViewController.mode = "Endless"
+        } else {
+            GameViewController.mode = String(mode)
+        }
         print("Mode: \(GameViewController.mode)")
     }
     

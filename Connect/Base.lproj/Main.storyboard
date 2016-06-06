@@ -416,7 +416,7 @@
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="24" id="Gt6-eH-Ld2"/>
                                                     <constraint firstAttribute="width" constant="72" id="INA-xh-fvX"/>
-                                                    <constraint firstAttribute="width" constant="108" id="TNo-yt-Ih8"/>
+                                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="108" id="TNo-yt-Ih8"/>
                                                     <constraint firstAttribute="width" constant="48" id="Wbq-5n-0na"/>
                                                     <constraint firstAttribute="height" constant="18" id="XUo-Oi-v4z"/>
                                                     <constraint firstAttribute="height" constant="18" id="eOd-dn-Ai3"/>

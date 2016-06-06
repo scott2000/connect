@@ -45,7 +45,7 @@ class Challenge {
                     i = Tile.rg((18,27))
                 case 3:
                     g = .Chain
-                    i = Tile.rg((16,24))
+                    i = Tile.rg((min((Tile.height*Tile.width)-9,16),min((Tile.height*Tile.width)-6,24)))
                 case 5:
                     g = .Survive
                     i = Tile.rg((90,150))

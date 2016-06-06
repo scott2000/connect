@@ -305,8 +305,7 @@ class Challenge {
     func points(points: Int) {
         switch (goal) {
         case .Points:
-            progress = points
-            check()
+            progress += points
         default:
             return
         }

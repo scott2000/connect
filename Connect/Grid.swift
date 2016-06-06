@@ -472,6 +472,7 @@ class Grid: SKScene {
                 Grid.xp += i
                 Grid.points += i
                 pointsSoFar += i
+                Challenge.challenge?.points(i)
             }
         case .Explode:
             var pus: [(Tile.SpecialType, Tile.Color, Int, Int)] = []
@@ -482,6 +483,7 @@ class Grid: SKScene {
                         Grid.xp += i
                         Grid.points += i
                         pointsSoFar += i
+                        Challenge.challenge?.points(i)
                         let t = Tile.tiles[mode.rawValue]![x][y]!.type
                         if (Challenge.challenge != nil) {
                             Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
@@ -490,6 +492,7 @@ class Grid: SKScene {
                             Grid.xp += 24
                             Grid.points += 24
                             pointsSoFar += 24
+                            Challenge.challenge?.points(24)
                             pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                         }
                         Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -508,6 +511,7 @@ class Grid: SKScene {
                         Grid.xp += 60
                         Grid.points += 60
                         pointsSoFar += 60
+                        Challenge.challenge?.points(60)
                         let t = Tile.tiles[mode.rawValue]![x][y]!.type
                         if (Challenge.challenge != nil) {
                             Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
@@ -516,6 +520,7 @@ class Grid: SKScene {
                             Grid.xp += 24
                             Grid.points += 24
                             pointsSoFar += 24
+                            Challenge.challenge?.points(24)
                             pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                         }
                         Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -535,6 +540,7 @@ class Grid: SKScene {
                     Grid.xp += i
                     Grid.points += i
                     pointsSoFar += i
+                    Challenge.challenge?.points(i)
                     let t = Tile.tiles[mode.rawValue]![x][y]!.type
                     if (Challenge.challenge != nil) {
                         Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
@@ -543,6 +549,7 @@ class Grid: SKScene {
                         Grid.xp += 24
                         Grid.points += 24
                         pointsSoFar += 24
+                        Challenge.challenge?.points(24)
                         pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                     }
                     Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -556,6 +563,7 @@ class Grid: SKScene {
                     Grid.xp += i
                     Grid.points += i
                     pointsSoFar += i
+                    Challenge.challenge?.points(i)
                     let t = Tile.tiles[mode.rawValue]![x][y]!.type
                     if (Challenge.challenge != nil) {
                         Challenge.challenge!.clear(Tile.tiles[mode.rawValue]![x][y]!.color, type: t)
@@ -564,6 +572,7 @@ class Grid: SKScene {
                         Grid.xp += 24
                         Grid.points += 24
                         pointsSoFar += 24
+                        Challenge.challenge?.points(24)
                         pus.append((t,Tile.tiles[mode.rawValue]![x][y]!.color, x, y))
                     }
                     Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
@@ -577,6 +586,7 @@ class Grid: SKScene {
             Grid.xp += 72
             Grid.points += 72
             pointsSoFar += 72
+            Challenge.challenge?.points(72)
             if (mode == .Moves) {
                 freezeMoves += 6
             } else {
@@ -591,6 +601,7 @@ class Grid: SKScene {
                         Grid.xp += i
                         Grid.points += i
                         pointsSoFar += i
+                        Challenge.challenge?.points(i)
                         Tile.tiles[mode.rawValue]![x][y]!.type = .Wildcard
                         Tile.tiles[mode.rawValue]![x][y]!.color = .None
                         Tile.tiles[mode.rawValue]![x][y]!.node!.fillColor = UIColor.whiteColor()
@@ -638,7 +649,7 @@ class Grid: SKScene {
                     }
                     movePoint(from: (chain!.first!.0,chain!.first!.1), to: (chain!.last!.0,chain!.last!.1))
                     clearChain()
-                    if (energy > 0 && (Challenge.challenge == nil || !Challenge.challenge!.completed)) {
+                    if (energy > 0 && !gridPaused) {
                         if (energy <= (mode == .Moves ? Grid.moveEnergy*3 : Grid.energyThreshold) && mode != .Timed) {
                             Grid.timeSound?.play()
                         } else {
@@ -671,6 +682,7 @@ class Grid: SKScene {
                 Grid.xp += increase
                 Grid.points += increase
                 pointsSoFar += increase
+                Challenge.challenge?.points(increase)
                 swaps = max(swaps-(t/3),0)
                 var pus: [(Tile.SpecialType, Tile.Color, Int, Int)] = []
                 for (x, y, _) in chain! {
@@ -681,6 +693,7 @@ class Grid: SKScene {
                             Grid.xp += 60
                             Grid.points += 60
                             pointsSoFar += 60
+                            Challenge.challenge?.points(60)
                         }
                         Tile.tiles[mode.rawValue]![x][y]!.node!.removeFromParent()
                         Tile.tiles[mode.rawValue]![x][y] = nil
@@ -692,6 +705,7 @@ class Grid: SKScene {
                             Grid.xp += 24
                             Grid.points += 24
                             pointsSoFar += 24
+                            Challenge.challenge?.points(24)
                         }
                     }
                 }
@@ -707,7 +721,7 @@ class Grid: SKScene {
                 }
                 if (energy <= Grid.moveEnergy*3 && mode == .Moves && energy > 0) {
                     Grid.timeSound?.play()
-                } else if (energy > 0 && (Challenge.challenge == nil || !Challenge.challenge!.completed)) {
+                } else if (energy > 0 && !gridPaused) {
                     if (pus.count > 0) {
                         Grid.powerupSound?.play()
                     } else {
@@ -1179,7 +1193,7 @@ class Grid: SKScene {
     
     func update() {
         if (running) {
-            Challenge.challenge?.points(pointsSoFar)
+            Challenge.challenge?.check()
             var i = 0
             if (Grid.level < Grid.maxLevel && Grid.level > 0) {
                 if (xpBar == nil) {

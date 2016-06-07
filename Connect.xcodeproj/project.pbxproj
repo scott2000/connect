@@ -244,7 +244,7 @@
 				TargetAttributes = {
 					D2BDF0601CE8CE5C0091DDF1 = {
 						CreatedOnToolsVersion = 7.2.1;
-						DevelopmentTeam = BEN2728H26;
+						DevelopmentTeam = TV52U759W4;
 					};
 					D2BDF0781CE8CE5C0091DDF1 = {
 						CreatedOnToolsVersion = 7.2.1;
@@ -470,7 +470,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Connect/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.scottTaylor.Connect;
+				PRODUCT_BUNDLE_IDENTIFIER = com.taylor.Connect;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -485,7 +485,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Connect/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.scottTaylor.Connect;
+				PRODUCT_BUNDLE_IDENTIFIER = com.taylor.Connect;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;

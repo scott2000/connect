@@ -129,12 +129,12 @@ class MainViewController: UIViewController {
         }
         PointsLabel.text = "\(MainViewController.number(Grid.points)) \(Grid.points >= 10_000_000 ? "XP" : "Points")"
         let scha = Challenge.challenge == nil || (!Challenge.challenge!.daily && Grid.level < Grid.maxLevel)
-        if (challengeBar == nil && Grid.level > 0) {
+        if (challengeBar == nil) {
             MainViewController.scene = SKScene(size: CGSize(width: 296, height: 64))
             MainViewController.scene!.backgroundColor = UIColor.whiteColor()
-            if (scha) {
+            if (scha && Grid.level > 0) {
                 challengeBar = Bar(current: Grid.xp, max: Grid.maxXP(), position: CGPoint(x: 1, y: 24), width: 294, color: Tile.getColor(.Green), fontSize: 16, text: "\(Grid.xp)/\(Grid.maxXP()) XP")
-            } else if (Challenge.challenge != nil) {
+            } else if (Challenge.challenge != nil && Grid.level > 0) {
                 challengeBar = Bar(current: Challenge.challenge!.progress, max: Challenge.challenge!.total, position: CGPoint(x: 1, y: 24), width: 294, color: Challenge.challenge!.color, fontSize: 16, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
             } else {
                 challengeBar = nil
@@ -146,6 +146,8 @@ class MainViewController: UIViewController {
             } else {
                 challengeBar!.updateBar(Challenge.challenge!.progress, max: Challenge.challenge!.total, color: Challenge.challenge!.color, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total), before: true)
             }
+        } else {
+            challengeBar = nil
         }
     }
     

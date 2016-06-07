@@ -128,6 +128,7 @@ class MainViewController: UIViewController {
             CoinsLabel.text = "Level \(Grid.level)"
         }
         PointsLabel.text = "\(MainViewController.number(Grid.points)) \(Grid.points >= 10_000_000 ? "XP" : "Points")"
+        Challenge.new()
         let scha = Challenge.challenge == nil || (!Challenge.challenge!.daily && Grid.level < Grid.maxLevel)
         if (challengeBar == nil) {
             MainViewController.scene = SKScene(size: CGSize(width: 296, height: 64))

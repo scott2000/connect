@@ -1,0 +1,587 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D2010D6F1CEA70190098348D /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2010D6E1CEA70190098348D /* Grid.swift */; };
+		D203F5CE1CF7893D0072240A /* Challenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D203F5CD1CF7893D0072240A /* Challenge.swift */; };
+		D23C25C11D01C4DE00AF4463 /* Bar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23C25C01D01C4DE00AF4463 /* Bar.swift */; };
+		D25D8F591CF6272C00C7B008 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25D8F581CF6272C00C7B008 /* Tile.swift */; };
+		D28CEF1E1D04561C0066727E /* Records.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28CEF1D1D04561C0066727E /* Records.swift */; };
+		D28CEF251D04B5DC0066727E /* Die.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF211D04B5DC0066727E /* Die.wav */; };
+		D28CEF2A1D04CD460066727E /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28CEF291D04CD460066727E /* SoundPlayer.swift */; };
+		D28CEF2C1D04E32A0066727E /* Win.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF2B1D04E32A0066727E /* Win.wav */; };
+		D28CEF2E1D04FAC50066727E /* Powerup.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF2D1D04FAC50066727E /* Powerup.wav */; };
+		D28CEF301D04FC660066727E /* Time.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF2F1D04FC660066727E /* Time.wav */; };
+		D28CEF341D05D3590066727E /* Swap.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF321D05D3590066727E /* Swap.wav */; };
+		D28CEF391D05D56E0066727E /* Chain.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF371D05D56E0066727E /* Chain.wav */; };
+		D28CEF3A1D05D56E0066727E /* Menu.wav in Resources */ = {isa = PBXBuildFile; fileRef = D28CEF381D05D56E0066727E /* Menu.wav */; };
+		D28CEF3C1D065A770066727E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28CEF3B1D065A770066727E /* MainViewController.swift */; };
+		D28CEF3E1D065A850066727E /* PauseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28CEF3D1D065A850066727E /* PauseViewController.swift */; };
+		D28CEF401D065A9D0066727E /* DifficultyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28CEF3F1D065A9D0066727E /* DifficultyViewController.swift */; };
+		D2BDF0651CE8CE5C0091DDF1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2BDF0641CE8CE5C0091DDF1 /* AppDelegate.swift */; };
+		D2BDF06B1CE8CE5C0091DDF1 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2BDF06A1CE8CE5C0091DDF1 /* GameViewController.swift */; };
+		D2BDF06E1CE8CE5C0091DDF1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2BDF06C1CE8CE5C0091DDF1 /* Main.storyboard */; };
+		D2BDF0701CE8CE5C0091DDF1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D2BDF06F1CE8CE5C0091DDF1 /* Assets.xcassets */; };
+		D2BDF0731CE8CE5C0091DDF1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2BDF0711CE8CE5C0091DDF1 /* LaunchScreen.storyboard */; };
+		D2BDF07E1CE8CE5C0091DDF1 /* ConnectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2BDF07D1CE8CE5C0091DDF1 /* ConnectTests.swift */; };
+		D2BDF0891CE8CE5C0091DDF1 /* ConnectUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2BDF0881CE8CE5C0091DDF1 /* ConnectUITests.swift */; };
+		D2F646C41CFF9A8400D7668C /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F646C31CFF9A8400D7668C /* Button.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D2BDF07A1CE8CE5C0091DDF1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D2BDF0591CE8CE5B0091DDF1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2BDF0601CE8CE5C0091DDF1;
+			remoteInfo = Connect;
+		};
+		D2BDF0851CE8CE5C0091DDF1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D2BDF0591CE8CE5B0091DDF1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2BDF0601CE8CE5C0091DDF1;
+			remoteInfo = Connect;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D2010D6E1CEA70190098348D /* Grid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		D203F5CD1CF7893D0072240A /* Challenge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Challenge.swift; sourceTree = "<group>"; };
+		D23C25C01D01C4DE00AF4463 /* Bar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bar.swift; sourceTree = "<group>"; };
+		D25D8F581CF6272C00C7B008 /* Tile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
+		D28CEF1D1D04561C0066727E /* Records.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Records.swift; sourceTree = "<group>"; };
+		D28CEF211D04B5DC0066727E /* Die.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Die.wav; sourceTree = "<group>"; };
+		D28CEF291D04CD460066727E /* SoundPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
+		D28CEF2B1D04E32A0066727E /* Win.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Win.wav; sourceTree = "<group>"; };
+		D28CEF2D1D04FAC50066727E /* Powerup.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Powerup.wav; sourceTree = "<group>"; };
+		D28CEF2F1D04FC660066727E /* Time.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Time.wav; sourceTree = "<group>"; };
+		D28CEF321D05D3590066727E /* Swap.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Swap.wav; sourceTree = "<group>"; };
+		D28CEF371D05D56E0066727E /* Chain.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Chain.wav; sourceTree = "<group>"; };
+		D28CEF381D05D56E0066727E /* Menu.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Menu.wav; sourceTree = "<group>"; };
+		D28CEF3B1D065A770066727E /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		D28CEF3D1D065A850066727E /* PauseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PauseViewController.swift; sourceTree = "<group>"; };
+		D28CEF3F1D065A9D0066727E /* DifficultyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DifficultyViewController.swift; sourceTree = "<group>"; };
+		D2BDF0611CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Connect - Swap and Connect Dots.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2BDF0641CE8CE5C0091DDF1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D2BDF06A1CE8CE5C0091DDF1 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		D2BDF06D1CE8CE5C0091DDF1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D2BDF06F1CE8CE5C0091DDF1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D2BDF0721CE8CE5C0091DDF1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		D2BDF0741CE8CE5C0091DDF1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2BDF0791CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Connect - Swap and Connect Dots.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2BDF07D1CE8CE5C0091DDF1 /* ConnectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectTests.swift; sourceTree = "<group>"; };
+		D2BDF07F1CE8CE5C0091DDF1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2BDF0841CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Connect - Swap and Connect Dots.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2BDF0881CE8CE5C0091DDF1 /* ConnectUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectUITests.swift; sourceTree = "<group>"; };
+		D2BDF08A1CE8CE5C0091DDF1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2F646C31CFF9A8400D7668C /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D2BDF05E1CE8CE5C0091DDF1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2BDF0761CE8CE5C0091DDF1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2BDF0811CE8CE5C0091DDF1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D2BDF0581CE8CE5B0091DDF1 = {
+			isa = PBXGroup;
+			children = (
+				D2BDF0631CE8CE5C0091DDF1 /* Connect */,
+				D2BDF07C1CE8CE5C0091DDF1 /* ConnectTests */,
+				D2BDF0871CE8CE5C0091DDF1 /* ConnectUITests */,
+				D2BDF0621CE8CE5C0091DDF1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D2BDF0621CE8CE5C0091DDF1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2BDF0611CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots.app */,
+				D2BDF0791CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots.xctest */,
+				D2BDF0841CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D2BDF0631CE8CE5C0091DDF1 /* Connect */ = {
+			isa = PBXGroup;
+			children = (
+				D2BDF0641CE8CE5C0091DDF1 /* AppDelegate.swift */,
+				D2010D6E1CEA70190098348D /* Grid.swift */,
+				D23C25C01D01C4DE00AF4463 /* Bar.swift */,
+				D203F5CD1CF7893D0072240A /* Challenge.swift */,
+				D25D8F581CF6272C00C7B008 /* Tile.swift */,
+				D28CEF3B1D065A770066727E /* MainViewController.swift */,
+				D28CEF3F1D065A9D0066727E /* DifficultyViewController.swift */,
+				D2BDF06A1CE8CE5C0091DDF1 /* GameViewController.swift */,
+				D28CEF3D1D065A850066727E /* PauseViewController.swift */,
+				D28CEF1D1D04561C0066727E /* Records.swift */,
+				D2F646C31CFF9A8400D7668C /* Button.swift */,
+				D28CEF291D04CD460066727E /* SoundPlayer.swift */,
+				D2BDF06C1CE8CE5C0091DDF1 /* Main.storyboard */,
+				D2BDF0711CE8CE5C0091DDF1 /* LaunchScreen.storyboard */,
+				D2BDF06F1CE8CE5C0091DDF1 /* Assets.xcassets */,
+				D28CEF371D05D56E0066727E /* Chain.wav */,
+				D28CEF381D05D56E0066727E /* Menu.wav */,
+				D28CEF321D05D3590066727E /* Swap.wav */,
+				D28CEF2F1D04FC660066727E /* Time.wav */,
+				D28CEF2D1D04FAC50066727E /* Powerup.wav */,
+				D28CEF2B1D04E32A0066727E /* Win.wav */,
+				D28CEF211D04B5DC0066727E /* Die.wav */,
+				D2BDF0741CE8CE5C0091DDF1 /* Info.plist */,
+			);
+			path = Connect;
+			sourceTree = "<group>";
+		};
+		D2BDF07C1CE8CE5C0091DDF1 /* ConnectTests */ = {
+			isa = PBXGroup;
+			children = (
+				D2BDF07D1CE8CE5C0091DDF1 /* ConnectTests.swift */,
+				D2BDF07F1CE8CE5C0091DDF1 /* Info.plist */,
+			);
+			path = ConnectTests;
+			sourceTree = "<group>";
+		};
+		D2BDF0871CE8CE5C0091DDF1 /* ConnectUITests */ = {
+			isa = PBXGroup;
+			children = (
+				D2BDF0881CE8CE5C0091DDF1 /* ConnectUITests.swift */,
+				D2BDF08A1CE8CE5C0091DDF1 /* Info.plist */,
+			);
+			path = ConnectUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D2BDF0601CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2BDF08D1CE8CE5C0091DDF1 /* Build configuration list for PBXNativeTarget "Connect - Swap and Connect Dots" */;
+			buildPhases = (
+				D2BDF05D1CE8CE5C0091DDF1 /* Sources */,
+				D2BDF05E1CE8CE5C0091DDF1 /* Frameworks */,
+				D2BDF05F1CE8CE5C0091DDF1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Connect - Swap and Connect Dots";
+			productName = Connect;
+			productReference = D2BDF0611CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D2BDF0781CE8CE5C0091DDF1 /* Connect - Swap and Connect DotsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2BDF0901CE8CE5C0091DDF1 /* Build configuration list for PBXNativeTarget "Connect - Swap and Connect DotsTests" */;
+			buildPhases = (
+				D2BDF0751CE8CE5C0091DDF1 /* Sources */,
+				D2BDF0761CE8CE5C0091DDF1 /* Frameworks */,
+				D2BDF0771CE8CE5C0091DDF1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D2BDF07B1CE8CE5C0091DDF1 /* PBXTargetDependency */,
+			);
+			name = "Connect - Swap and Connect DotsTests";
+			productName = ConnectTests;
+			productReference = D2BDF0791CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D2BDF0831CE8CE5C0091DDF1 /* Connect - Swap and Connect DotsUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2BDF0931CE8CE5C0091DDF1 /* Build configuration list for PBXNativeTarget "Connect - Swap and Connect DotsUITests" */;
+			buildPhases = (
+				D2BDF0801CE8CE5C0091DDF1 /* Sources */,
+				D2BDF0811CE8CE5C0091DDF1 /* Frameworks */,
+				D2BDF0821CE8CE5C0091DDF1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D2BDF0861CE8CE5C0091DDF1 /* PBXTargetDependency */,
+			);
+			name = "Connect - Swap and Connect DotsUITests";
+			productName = ConnectUITests;
+			productReference = D2BDF0841CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D2BDF0591CE8CE5B0091DDF1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0720;
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "Scott Taylor";
+				TargetAttributes = {
+					D2BDF0601CE8CE5C0091DDF1 = {
+						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = 8V3G3TS9X7;
+					};
+					D2BDF0781CE8CE5C0091DDF1 = {
+						CreatedOnToolsVersion = 7.2.1;
+						TestTargetID = D2BDF0601CE8CE5C0091DDF1;
+					};
+					D2BDF0831CE8CE5C0091DDF1 = {
+						CreatedOnToolsVersion = 7.2.1;
+						TestTargetID = D2BDF0601CE8CE5C0091DDF1;
+					};
+				};
+			};
+			buildConfigurationList = D2BDF05C1CE8CE5B0091DDF1 /* Build configuration list for PBXProject "Connect - Swap and Connect Dots" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D2BDF0581CE8CE5B0091DDF1;
+			productRefGroup = D2BDF0621CE8CE5C0091DDF1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2BDF0601CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots */,
+				D2BDF0781CE8CE5C0091DDF1 /* Connect - Swap and Connect DotsTests */,
+				D2BDF0831CE8CE5C0091DDF1 /* Connect - Swap and Connect DotsUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D2BDF05F1CE8CE5C0091DDF1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D28CEF2E1D04FAC50066727E /* Powerup.wav in Resources */,
+				D28CEF3A1D05D56E0066727E /* Menu.wav in Resources */,
+				D2BDF0731CE8CE5C0091DDF1 /* LaunchScreen.storyboard in Resources */,
+				D28CEF301D04FC660066727E /* Time.wav in Resources */,
+				D28CEF341D05D3590066727E /* Swap.wav in Resources */,
+				D28CEF2C1D04E32A0066727E /* Win.wav in Resources */,
+				D2BDF0701CE8CE5C0091DDF1 /* Assets.xcassets in Resources */,
+				D28CEF251D04B5DC0066727E /* Die.wav in Resources */,
+				D28CEF391D05D56E0066727E /* Chain.wav in Resources */,
+				D2BDF06E1CE8CE5C0091DDF1 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2BDF0771CE8CE5C0091DDF1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2BDF0821CE8CE5C0091DDF1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2BDF05D1CE8CE5C0091DDF1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D28CEF3E1D065A850066727E /* PauseViewController.swift in Sources */,
+				D203F5CE1CF7893D0072240A /* Challenge.swift in Sources */,
+				D23C25C11D01C4DE00AF4463 /* Bar.swift in Sources */,
+				D28CEF1E1D04561C0066727E /* Records.swift in Sources */,
+				D2F646C41CFF9A8400D7668C /* Button.swift in Sources */,
+				D28CEF2A1D04CD460066727E /* SoundPlayer.swift in Sources */,
+				D2BDF06B1CE8CE5C0091DDF1 /* GameViewController.swift in Sources */,
+				D28CEF401D065A9D0066727E /* DifficultyViewController.swift in Sources */,
+				D25D8F591CF6272C00C7B008 /* Tile.swift in Sources */,
+				D2BDF0651CE8CE5C0091DDF1 /* AppDelegate.swift in Sources */,
+				D2010D6F1CEA70190098348D /* Grid.swift in Sources */,
+				D28CEF3C1D065A770066727E /* MainViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2BDF0751CE8CE5C0091DDF1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2BDF07E1CE8CE5C0091DDF1 /* ConnectTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2BDF0801CE8CE5C0091DDF1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2BDF0891CE8CE5C0091DDF1 /* ConnectUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D2BDF07B1CE8CE5C0091DDF1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2BDF0601CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots */;
+			targetProxy = D2BDF07A1CE8CE5C0091DDF1 /* PBXContainerItemProxy */;
+		};
+		D2BDF0861CE8CE5C0091DDF1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2BDF0601CE8CE5C0091DDF1 /* Connect - Swap and Connect Dots */;
+			targetProxy = D2BDF0851CE8CE5C0091DDF1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D2BDF06C1CE8CE5C0091DDF1 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D2BDF06D1CE8CE5C0091DDF1 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		D2BDF0711CE8CE5C0091DDF1 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D2BDF0721CE8CE5C0091DDF1 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D2BDF08B1CE8CE5C0091DDF1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D2BDF08C1CE8CE5C0091DDF1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D2BDF08E1CE8CE5C0091DDF1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = Connect/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.taylorDeveloper.Connect;
+				PRODUCT_NAME = "Connect - Swap and Connect Dots";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		D2BDF08F1CE8CE5C0091DDF1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = Connect/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.taylorDeveloper.Connect;
+				PRODUCT_NAME = "Connect - Swap and Connect Dots";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		D2BDF0911CE8CE5C0091DDF1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = ConnectTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.scottTaylor.ConnectTests;
+				PRODUCT_NAME = "Connect - Swap and Connect Dots";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Connect - Swap and Connect Dots.app/Connect - Swap and Connect Dots";
+			};
+			name = Debug;
+		};
+		D2BDF0921CE8CE5C0091DDF1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = ConnectTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.scottTaylor.ConnectTests;
+				PRODUCT_NAME = "Connect - Swap and Connect Dots";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Connect - Swap and Connect Dots.app/Connect - Swap and Connect Dots";
+			};
+			name = Release;
+		};
+		D2BDF0941CE8CE5C0091DDF1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = ConnectUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.scottTaylor.ConnectUITests;
+				PRODUCT_NAME = "Connect - Swap and Connect Dots";
+				TEST_TARGET_NAME = Connect;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		D2BDF0951CE8CE5C0091DDF1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = ConnectUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.scottTaylor.ConnectUITests;
+				PRODUCT_NAME = "Connect - Swap and Connect Dots";
+				TEST_TARGET_NAME = Connect;
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D2BDF05C1CE8CE5B0091DDF1 /* Build configuration list for PBXProject "Connect - Swap and Connect Dots" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2BDF08B1CE8CE5C0091DDF1 /* Debug */,
+				D2BDF08C1CE8CE5C0091DDF1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D2BDF08D1CE8CE5C0091DDF1 /* Build configuration list for PBXNativeTarget "Connect - Swap and Connect Dots" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2BDF08E1CE8CE5C0091DDF1 /* Debug */,
+				D2BDF08F1CE8CE5C0091DDF1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D2BDF0901CE8CE5C0091DDF1 /* Build configuration list for PBXNativeTarget "Connect - Swap and Connect DotsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2BDF0911CE8CE5C0091DDF1 /* Debug */,
+				D2BDF0921CE8CE5C0091DDF1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D2BDF0931CE8CE5C0091DDF1 /* Build configuration list for PBXNativeTarget "Connect - Swap and Connect DotsUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2BDF0941CE8CE5C0091DDF1 /* Debug */,
+				D2BDF0951CE8CE5C0091DDF1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D2BDF0591CE8CE5B0091DDF1 /* Project object */;
+}

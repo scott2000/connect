@@ -57,7 +57,7 @@ class Challenge {
             } else if (challenge == nil) {
                 var i = 0
                 var g: Goal? = nil
-                switch(arc4random_uniform(Grid.active!.mode == .Timed || Int(arc4random_uniform(2)) == 1 ? 7 : 6)) {
+                switch(arc4random_uniform((Grid.active != nil && Grid.active!.mode == .Timed) || Int(arc4random_uniform(2)) == 1 ? 7 : 6)) {
                 case 0:
                     g = .Tiles(Tile.Color(rawValue: Int(arc4random_uniform(UInt32(Tile.colorsUnlocked))))!)
                     i = Tile.rg((48,72))

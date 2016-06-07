@@ -41,6 +41,7 @@ class Grid: SKScene {
     static let dieSound = SoundPlayer.getSound("Die")
     static let winSound = SoundPlayer.getSound("Win")
     static let timeSound = SoundPlayer.getSound("Time")
+    static var maxLevelInstant = false
     var chain: [(Int,Int,SKShapeNode?)]?
     var chainLine: SKShapeNode?
     var falling: [SKShapeNode?] = []
@@ -97,6 +98,10 @@ class Grid: SKScene {
             let (l1, x1) = fixXP(level, xp, lastVersion)
             level = l1
             xp = x1
+        }
+        if (maxLevelInstant) {
+            level = maxLevel
+            maxLevelInstant = false
         }
         if (level > -2) {
             for i in -1...level {

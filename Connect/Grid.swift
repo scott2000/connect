@@ -12,7 +12,7 @@ import AVFoundation
 
 class Grid: SKScene {
     static let basePath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-    static let lvlsys = 18
+    static let lvlsys = 19
     static let maxEnergy = 144
     static let energyThreshold = Grid.maxEnergy/4
     static let maxLevel = 21
@@ -321,8 +321,10 @@ class Grid: SKScene {
                 let b = 288*Int(pow(Double(level),Double(2)))+864*level
                 let c = 1024*level+4096
                 r = max(a,min(b,c))
-            default:
+            case 18:
                 r = min(4096*level-2048,512*level+10240)
+            default:
+                r = min((4096*level)-2048,max((512*level)+10240,(4096*level)-51920))
             }
         }
         if (u) {

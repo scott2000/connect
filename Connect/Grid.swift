@@ -12,7 +12,8 @@ import AVFoundation
 
 class Grid: SKScene {
     static let basePath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-    static let lvlsys = 19
+    static let lvlsys = 21
+    static let releaseLvlsys = 21
     static let maxEnergy = 144
     static let energyThreshold = Grid.maxEnergy/4
     static let maxLevel = 21
@@ -92,7 +93,7 @@ class Grid: SKScene {
                 Challenge.load(data[3])
             }
         }
-        if (lastVersion != lvlsys) {
+        if (lastVersion != lvlsys && lastVersion < releaseLvlsys) {
             let (l1, x1) = fixXP(level, xp, lastVersion)
             level = l1
             xp = x1
@@ -104,7 +105,7 @@ class Grid: SKScene {
         } else {
             Tile.setColors(1)
         }
-        if (lastVersion == lvlsys) {
+        if (lastVersion == lvlsys || lastVersion >= releaseLvlsys) {
             for n in grids.keys {
                 let g = grids[n]
                 g?.loadAll()
@@ -326,8 +327,12 @@ class Grid: SKScene {
                 r = max(a,min(b,c))
             case 18:
                 r = min(4096*level-2048,512*level+10240)
-            default:
+            case 19:
                 r = min((4096*level)-2048,max((512*level)+10240,(4096*level)-51920))
+            case 20:
+                r = min(8199*level-2048,256*level+15360)
+            default:
+                r = min(8192*level-2048,432*level+15360)
             }
         }
         if (u) {

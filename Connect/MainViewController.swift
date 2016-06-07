@@ -128,19 +128,24 @@ class MainViewController: UIViewController {
             CoinsLabel.text = "Level \(Grid.level)"
         }
         PointsLabel.text = "\(MainViewController.number(Grid.points)) \(Grid.points >= 10_000_000 ? "XP" : "Points")"
-        if (challengeBar == nil || (Challenge.challenge == nil && challengeBar != nil)) {
+        let scha = Challenge.challenge == nil || (!Challenge.challenge!.daily && Grid.level < Grid.maxLevel)
+        if (challengeBar == nil && Grid.level > 0) {
             MainViewController.scene = SKScene(size: CGSize(width: 296, height: 64))
             MainViewController.scene!.backgroundColor = UIColor.whiteColor()
-            if (Challenge.challenge != nil) {
-                challengeBar = Bar(current: Challenge.challenge!.progress, max: Challenge.challenge!.total, position: CGPoint(x: 1, y: 24), width: 294, color: Challenge.challenge!.color, fontSize: 16, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
-            } else if (Grid.level > 0) {
+            if (scha) {
                 challengeBar = Bar(current: Grid.xp, max: Grid.maxXP(), position: CGPoint(x: 1, y: 24), width: 294, color: Tile.getColor(.Green), fontSize: 16, text: "\(Grid.xp)/\(Grid.maxXP()) XP")
+            } else if (Challenge.challenge != nil) {
+                challengeBar = Bar(current: Challenge.challenge!.progress, max: Challenge.challenge!.total, position: CGPoint(x: 1, y: 24), width: 294, color: Challenge.challenge!.color, fontSize: 16, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
             } else {
                 challengeBar = nil
             }
             ChallengeView?.presentScene(MainViewController.scene)
-        } else {
-            challengeBar!.updateBar(Challenge.challenge!.progress, max: Challenge.challenge!.total, color: Challenge.challenge!.color, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total), before: true)
+        } else if (Grid.level > 0) {
+            if (scha) {
+                challengeBar!.updateBar(Grid.xp, max: Grid.maxXP(), color: Tile.getColor(.Green), text: "\(Grid.xp)/\(Grid.maxXP()) XP", before: true)
+            } else {
+                challengeBar!.updateBar(Challenge.challenge!.progress, max: Challenge.challenge!.total, color: Challenge.challenge!.color, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total), before: true)
+            }
         }
     }
     

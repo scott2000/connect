@@ -39,11 +39,7 @@ class PauseViewController: UIViewController {
     }
     
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            return .Portrait
-        } else {
-            return .All
-        }
+        return .Portrait
     }
     
     override func didReceiveMemoryWarning() {

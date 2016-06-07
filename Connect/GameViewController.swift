@@ -57,13 +57,10 @@ class GameViewController: UIViewController {
     override func shouldAutorotate() -> Bool {
         return false
     }
-
+    
+    
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            return .Portrait
-        } else {
-            return .All
-        }
+        return .Portrait
     }
 
     override func didReceiveMemoryWarning() {

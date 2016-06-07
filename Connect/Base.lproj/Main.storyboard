@@ -111,7 +111,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lT3-Qy-atp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="459.5" y="550.5"/>
+            <point key="canvasLocation" x="450.5" y="550.5"/>
         </scene>
         <!--Game-->
         <scene sceneID="J6F-Lx-dqv">
@@ -177,7 +177,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="an5-Zh-vkX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="899.5" y="550.5"/>
+            <point key="canvasLocation" x="892.5" y="550.5"/>
         </scene>
         <!--Pause-->
         <scene sceneID="tXr-a1-R10">
@@ -188,7 +188,7 @@
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
                     </layoutGuides>
                     <view key="view" multipleTouchEnabled="YES" contentMode="scaleToFill" id="3se-qz-xqx">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PUc-VO-kcN">
@@ -198,7 +198,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="57C-hE-4l0">
-                                <rect key="frame" x="71" y="203" width="178" height="162"/>
+                                <rect key="frame" x="99" y="253" width="178" height="162"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="-2" translatesAutoresizingMaskIntoConstraints="NO" id="pFR-RO-u2S">
                                         <rect key="frame" x="48" y="0.0" width="82" height="62"/>
@@ -259,7 +259,7 @@
                         </constraints>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="MainLabel" destination="QUt-cf-5xI" id="OKU-2h-Xce"/>
                         <outlet property="SubLabel" destination="y4f-9z-KI2" id="bjB-Ou-ybB"/>
@@ -267,7 +267,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="899.5" y="-297.5"/>
+            <point key="canvasLocation" x="1342.5" y="550.5"/>
         </scene>
         <!--Main-->
         <scene sceneID="FEu-Sl-gvy">

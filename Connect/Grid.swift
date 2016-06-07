@@ -1078,20 +1078,30 @@ class Grid: SKScene {
     
     func die() {
         energy = Grid.maxEnergy
-        Grid.dieSound?.play()
-        Grid.xp = max(Grid.xp-Tile.rg((864,2048)),0)
         if (mode == .Standard) {
+            Grid.xp = max(Grid.xp-Tile.rg((2048,4096)),0)
             Grid.display.main = "You Died"
+            Challenge.challenge?.die()
+            Grid.dieSound?.play()
         } else if (mode == .Moves) {
             Grid.display.main = "Round Over"
+            if (pointsSoFar >= record!.points) {
+                Grid.winSound?.play()
+            } else {
+                Grid.dieSound?.play()
+            }
         } else if (mode == .Timed) {
+            Grid.xp = max(Grid.xp-Tile.rg((864,2048)),0)
             Grid.display.main = "Game Over"
+            Challenge.challenge?.die()
+            if (pointsSoFar >= record!.points) {
+                Grid.winSound?.play()
+            } else {
+                Grid.dieSound?.play()
+            }
         }
         Grid.display.sub = "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
         record?.points(pointsSoFar)
-        if (mode != .Moves) {
-            Challenge.challenge?.die()
-        }
         pointsSoFar = 0
         reset()
     }

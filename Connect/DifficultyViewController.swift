@@ -11,7 +11,6 @@ import UIKit
 import SpriteKit
 
 class DifficultyViewController: UIViewController {
-    
     @IBOutlet weak var HardButton: Button!
     
     @IBOutlet weak var HighScoreLabel: UILabel!

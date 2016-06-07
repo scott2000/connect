@@ -281,7 +281,7 @@ class Grid: SKScene {
         if (running && !gridPaused) {
             gridPaused = true
             Grid.display.main = main ?? "Paused"
-            Grid.display.sub = sub ?? "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
+            Grid.display.sub = sub ?? "Score: \(MainViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
             reset()
         }
     }
@@ -1102,7 +1102,7 @@ class Grid: SKScene {
                 Grid.dieSound?.play()
             }
         }
-        Grid.display.sub = "Score: \(GameViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
+        Grid.display.sub = "Score: \(MainViewController.number(pointsSoFar))\(pointsSoFar >= record!.points ? " (High Score)" : "")"
         record?.points(pointsSoFar)
         pointsSoFar = 0
         reset()
@@ -1132,7 +1132,7 @@ class Grid: SKScene {
         clearChain()
         frames = 0
         Grid.lc = true
-        GameViewController.cont?.performSegueWithIdentifier("pause", sender: nil)
+        MainViewController.cont?.performSegueWithIdentifier("pause", sender: nil)
     }
     
     func restore() {

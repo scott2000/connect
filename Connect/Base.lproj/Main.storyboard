@@ -9,7 +9,7 @@
         <!--Difficulty-->
         <scene sceneID="IaC-ef-PuS">
             <objects>
-                <viewController title="Difficulty" id="LRp-Mb-c89" customClass="GameViewController" customModule="Connect" sceneMemberID="viewController">
+                <viewController title="Difficulty" id="LRp-Mb-c89" customClass="DifficultyViewController" customModule="Connect" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="fjk-Ss-V1C"/>
                         <viewControllerLayoutGuide type="bottom" id="Gbi-Lf-ait"/>
@@ -141,7 +141,7 @@
                                     </mask>
                                 </variation>
                                 <connections>
-                                    <action selector="PauseGame:" destination="FVS-fS-TRJ" eventType="touchUpInside" id="Vl0-Qw-spF"/>
+                                    <action selector="PauseGame:" destination="FVS-fS-TRJ" eventType="touchUpInside" id="12W-IY-XDp"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -182,7 +182,7 @@
         <!--Pause-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController title="Pause" id="BV1-FR-VrT" customClass="GameViewController" customModule="Connect" sceneMemberID="viewController">
+                <viewController title="Pause" id="BV1-FR-VrT" customClass="PauseViewController" customModule="Connect" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8aa-yV-Osq"/>
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
@@ -272,7 +272,7 @@
         <!--Main-->
         <scene sceneID="FEu-Sl-gvy">
             <objects>
-                <viewController title="Main" id="x6D-7U-tAK" customClass="GameViewController" customModule="Connect" sceneMemberID="viewController">
+                <viewController title="Main" id="x6D-7U-tAK" customClass="MainViewController" customModule="Connect" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="wiw-O8-dvV"/>
                         <viewControllerLayoutGuide type="bottom" id="YFu-g2-WCO"/>
@@ -514,7 +514,7 @@
                         <outlet property="ResetButton" destination="8n4-Rl-7wf" id="6s9-4K-yQh"/>
                         <outlet property="StandardButton" destination="omo-wo-doS" id="2ZB-vj-aFf"/>
                         <outlet property="StandardLabel" destination="KS5-2L-gfB" id="jV9-8E-e9x"/>
-                        <outlet property="TimedButton" destination="cXB-c8-XGi" id="wh4-IS-Z5p"/>
+                        <outlet property="TimedButton" destination="cXB-c8-XGi" id="MXO-0E-VO8"/>
                         <outlet property="TimedLabel" destination="5dm-D3-KUE" id="C5x-yJ-o1U"/>
                     </connections>
                 </viewController>

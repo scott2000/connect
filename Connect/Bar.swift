@@ -26,7 +26,7 @@ class Bar {
     var u: Double
     
     init(current: Int, max: Int, position: CGPoint, width: Int, color: UIColor, fontSize fs: CGFloat, text: String?) {
-        scene = GameViewController.scene
+        scene = MainViewController.scene
         self.text = text
         self.fs = fs
         self.current = current

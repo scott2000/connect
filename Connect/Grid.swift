@@ -1209,6 +1209,20 @@ class Grid: SKScene {
         label = nil
     }
     
+    func energyBarColor() -> UIColor {
+        var threshold = Grid.energyThreshold
+        if (mode == .Moves) {
+            threshold = 24
+        }
+        if (energy <= threshold/2) {
+            return Tile.getColor(.Red)
+        } else if (energy <= threshold) {
+            return Tile.getColor(.Orange)
+        } else {
+            return Tile.getColor(.Yellow)
+        }
+    }
+    
     override func update(currentTime: NSTimeInterval) {
         update()
     }
@@ -1229,9 +1243,9 @@ class Grid: SKScene {
             }
             if (Grid.level >= 0) {
                 if (energyBar == nil) {
-                    energyBar = Bar(current: energy, max: Grid.maxEnergy, color: energy <= Grid.energyThreshold ? energy < Grid.energyThreshold/2 ? Tile.getColor(.Red) :Tile.getColor(.Orange) : Tile.getColor(.Yellow), index: i, text: nil, grid: self)
+                    energyBar = Bar(current: energy, max: Grid.maxEnergy, color: energyBarColor(), index: i, text: nil, grid: self)
                 } else {
-                    energyBar!.updateBar(energy, color: energy <= Grid.energyThreshold ? energy < Grid.energyThreshold/2 ? Tile.getColor(.Red) : Tile.getColor(.Orange) : Tile.getColor(.Yellow))
+                    energyBar!.updateBar(energy, color: energyBarColor())
                 }
             } else {
                 energyBar?.clearBar()

@@ -47,6 +47,7 @@ class MainViewController: UIViewController {
             Tile.powerupsUnlocked = []
             Challenge.challenge = nil
             Challenge.bar = [:]
+            UIApplication.sharedApplication().cancelAllLocalNotifications()
             for n in Grid.grids.keys {
                 let g = Grid.grids[n]
                 Grid.active = g

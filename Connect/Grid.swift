@@ -110,6 +110,9 @@ class Grid: SKScene {
                 g?.loadAll()
             }
         } else {
+            if (level < 7) {
+                UIApplication.sharedApplication().cancelAllLocalNotifications()
+            }
             for n in grids.keys {
                 let g = grids[n]
                 g?.loadAll(lastVersion)

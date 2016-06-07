@@ -243,7 +243,7 @@ class Challenge {
             if (Grid.active != nil && Challenge.bar[Grid.active!.mode.rawValue] == nil) {
                 Challenge.bar[Grid.active!.mode.rawValue] = Bar(current: progress, max: total, color: color, index: -1, text: (daily ? "DAILY: " : "") + goal.text(progress, best: best, total: total), grid: Grid.active)
             } else if (Grid.active != nil) {
-                Challenge.bar[Grid.active!.mode.rawValue]!!.updateBar(progress, max: total, color: color, text: (daily ? "DAILY: " : "") + goal.text(progress, best: best, total: total))
+                Challenge.bar[Grid.active!.mode.rawValue]!!.updateBar(progress, max: total, color: color, text: (daily ? "DAILY: " : "") + goal.text(progress, best: best, total: total), before: false)
             }
         }
     }

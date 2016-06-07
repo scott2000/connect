@@ -104,11 +104,14 @@ class Bar {
         updateBar(current, text: text)
     }
     
-    func updateBar(current: Int, max: Int, color: UIColor, text: String?) {
-        updateBar(current, text: text)
-        if (self.max != max || self.color != color) {
-            self.max = max
-            self.color = color
+    func updateBar(current: Int, max: Int, color: UIColor, text: String?, before: Bool) {
+        if (!before) {
+            updateBar(current, text: text)
+        }
+        self.max = max
+        self.color = color
+        if (before) {
+            updateBar(current, text: text)
         }
     }
     

@@ -139,7 +139,7 @@ class MainViewController: UIViewController {
             }
             ChallengeView?.presentScene(MainViewController.scene)
         } else {
-            challengeBar!.updateBar(Challenge.challenge!.progress, max: Challenge.challenge!.total, color: Challenge.challenge!.color, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total))
+            challengeBar!.updateBar(Challenge.challenge!.progress, max: Challenge.challenge!.total, color: Challenge.challenge!.color, text: (Challenge.challenge!.daily ? "DAILY: " : "") + Challenge.challenge!.goal.text(Challenge.challenge!.progress, best: Challenge.challenge!.best, total: Challenge.challenge!.total), before: true)
         }
     }
     

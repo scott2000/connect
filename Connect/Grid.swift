@@ -1122,6 +1122,9 @@ class Grid: SKScene {
     }
     
     func reset() {
+        if (Grid.level >= 7) {
+            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert, categories: nil))
+        }
         if (!gridPaused) {
             started = false
         }
@@ -1149,9 +1152,6 @@ class Grid: SKScene {
     }
     
     func restore() {
-        if (Grid.level >= 7) {
-            UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert, categories: nil))
-        }
         lastTime = NSDate().timeIntervalSince1970
         running = true
         if (!gridPaused) {

@@ -210,7 +210,7 @@ class Challenge {
         completed = true
         if (daily) {
             Tile.cooldown = Tile.rg((-432,-288))
-            let increase = Tile.rg((2592,7776))
+            let increase = Tile.rg((2048,4096))
             print("Daily Challenge Completed: +\(increase) XP")
             Grid.xp += increase
             Grid.points += increase
@@ -225,7 +225,7 @@ class Challenge {
             UIApplication.sharedApplication().scheduleLocalNotification(notification)
         } else {
             Tile.cooldown = min(Tile.cooldown-72,-18)
-            let increase = Tile.rg((864,1728))
+            let increase = Tile.rg((256,512))
             print("Challenge Completed: +\(increase) XP")
             Grid.xp += increase
             Grid.points += increase

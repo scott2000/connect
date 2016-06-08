@@ -489,7 +489,7 @@ class Grid: SKScene {
             if (!sh) {
                 sh = true
                 shuffle()
-                let i = 1024
+                let i = 256
                 Grid.xp += i
                 Grid.points += i
                 pointsSoFar += i

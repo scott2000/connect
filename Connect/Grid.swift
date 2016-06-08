@@ -478,7 +478,7 @@ class Grid: SKScene {
     }
     
     func getDiff() -> Int {
-        return max(0,diff.rawValue)*2+max(0,mode == .Timed ? 3 : 1)
+        return max(0,diff.rawValue)+max(0,mode == .Timed ? 4 : 2)
     }
     
     func runPowerup(type1: String, color color1: Int, _ xb: Int, _ yb: Int) {

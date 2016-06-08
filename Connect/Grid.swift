@@ -688,9 +688,9 @@ class Grid: SKScene {
                 let t3 = Int(exp2(Double(min(t-2,10))))*(max(1,mode.rawValue)*3)
                 if (mode != .Moves) {
                     if (diff != .Hard || inf == 0) {
-                        energy = min((energy+t3*2),Grid.maxEnergy)
+                        energy = min(energy+Int(Double(t3)*(mode == .Timed ? 2.5 : 1)),Grid.maxEnergy)
                     } else {
-                        energy = min(max(energy+t3-t2,0),Grid.maxEnergy)
+                        energy = min(energy+max(t3-t2*2,0),Grid.maxEnergy)
                     }
                 }
                 let increase = max(min(max(Int(exp2(Double(min(t-2,6))))-(swaps*2),0)+t-t2,Grid.maxXP()),0)*getDiff()

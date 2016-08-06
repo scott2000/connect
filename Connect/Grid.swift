@@ -1191,11 +1191,11 @@ class Grid: SKScene {
             if (Grid.level == 1 && Grid.xp == 0) {
                 makeLabel("Fill the Green Bar to Level Up")
             } else if (Grid.level == -2) {
-                makeLabel("Draw a Line Between the Dots")
+                makeLabel("Draw a Line Between the Tiles")
             } else if (Grid.level == -1) {
                 makeLabel("Wildcards Can Be Any Color")
             } else if (Grid.level == 0) {
-                makeLabel("You Can Swap Dots, But It Takes Energy")
+                makeLabel("You Can Swap Tiles, But It Takes Energy")
             }
         } else {
             deleteLabel()

@@ -28,68 +28,70 @@ class Challenge {
     }
     
     static func new() {
-        if (Grid.level >= 7) {
-            if (-lastChallenge.timeIntervalSinceNow >= 60*60*24) {
-                Challenge.lastChallenge = NSDate()
-                var i = 0
-                var g: Goal? = nil
-                switch(arc4random_uniform(Int(arc4random_uniform(2)) == 1 ? 5 : 4)) {
-                case 0:
-                    g = .Tiles(Tile.Color(rawValue: Int(arc4random_uniform(UInt32(Tile.colorsUnlocked))))!)
-                    i = Tile.rg((180,216))
-                case 1:
-                    g = .Wildcards
-                    i = Tile.rg((36,72))
-                case 2:
-                    g = .Powerups
-                    i = Tile.rg((18,27))
-                case 3:
-                    g = .Chain
-                    i = Tile.rg((min((Tile.height*Tile.width)-9,16),min((Tile.height*Tile.width)-6,24)))
-                case 5:
-                    g = .Survive
-                    i = Tile.rg((90,150))
-                default:
-                    return
+        if (Grid.active != nil && Tile.width > 3 && Tile.height > 3) {
+            if (Grid.level >= 7) {
+                if (-lastChallenge.timeIntervalSinceNow >= 60*60*24) {
+                    Challenge.lastChallenge = NSDate()
+                    var i = 0
+                    var g: Goal? = nil
+                    switch(arc4random_uniform(Int(arc4random_uniform(2)) == 1 ? 5 : 4)) {
+                    case 0:
+                        g = .Tiles(Tile.Color(rawValue: Int(arc4random_uniform(UInt32(Tile.colorsUnlocked))))!)
+                        i = Tile.rg((180,216))
+                    case 1:
+                        g = .Wildcards
+                        i = Tile.rg((36,72))
+                    case 2:
+                        g = .Powerups
+                        i = Tile.rg((18,27))
+                    case 3:
+                        g = .Chain
+                        i = Tile.rg((min((Tile.height*Tile.width)-9,16),min((Tile.height*Tile.width)-6,24)))
+                    case 5:
+                        g = .Survive
+                        i = Tile.rg((90,150))
+                    default:
+                        return
+                    }
+                    challenge = Challenge(goal: g!, total: i, daily: true)
+                    print("Daily Challenge: \(challenge!.goal.text(challenge!.progress, best: challenge!.best, total: challenge!.total))")
+                } else if (challenge == nil) {
+                    var i = 0
+                    var g: Goal? = nil
+                    switch(arc4random_uniform((Grid.active != nil && Grid.active!.mode == .Timed) || Int(arc4random_uniform(2)) == 1 ? 7 : 6)) {
+                    case 0:
+                        g = .Tiles(Tile.Color(rawValue: Int(arc4random_uniform(UInt32(Tile.colorsUnlocked))))!)
+                        i = Tile.rg((48,72))
+                    case 1:
+                        g = .Wildcards
+                        i = Tile.rg((6,12))
+                    case 2:
+                        g = .Powerups
+                        i = Tile.rg((3,5))
+                    case 3:
+                        g = .Chain
+                        i = Tile.rg((6,12))
+                    case 4:
+                        g = .Swaps
+                        i = Tile.rg((18,36))
+                    case 5:
+                        g = .Points
+                        i = Tile.rg((7500,12500))
+                    case 6:
+                        g = .Survive
+                        i = Tile.rg((60,90))
+                    default:
+                        return
+                    }
+                    challenge = Challenge(goal: g!, total: i, daily: false)
+                    print("Challenge: \(challenge!.goal.text(challenge!.progress, best: challenge!.best, total: challenge!.total))")
                 }
-                challenge = Challenge(goal: g!, total: i, daily: true)
-                print("Daily Challenge: \(challenge!.goal.text(challenge!.progress, best: challenge!.best, total: challenge!.total))")
-            } else if (challenge == nil) {
-                var i = 0
-                var g: Goal? = nil
-                switch(arc4random_uniform((Grid.active != nil && Grid.active!.mode == .Timed) || Int(arc4random_uniform(2)) == 1 ? 7 : 6)) {
-                case 0:
-                    g = .Tiles(Tile.Color(rawValue: Int(arc4random_uniform(UInt32(Tile.colorsUnlocked))))!)
-                    i = Tile.rg((48,72))
-                case 1:
-                    g = .Wildcards
-                    i = Tile.rg((6,12))
-                case 2:
-                    g = .Powerups
-                    i = Tile.rg((3,5))
-                case 3:
-                    g = .Chain
-                    i = Tile.rg((6,12))
-                case 4:
-                    g = .Swaps
-                    i = Tile.rg((18,36))
-                case 5:
-                    g = .Points
-                    i = Tile.rg((7500,12500))
-                case 6:
-                    g = .Survive
-                    i = Tile.rg((60,90))
-                default:
-                    return
-                }
-                challenge = Challenge(goal: g!, total: i, daily: false)
-                print("Challenge: \(challenge!.goal.text(challenge!.progress, best: challenge!.best, total: challenge!.total))")
+            } else if (challenge != nil) {
+                lastChallenge = NSDate(timeIntervalSince1970: 0)
+                challenge = nil
+                bar = [:]
             }
-        } else if (challenge != nil) {
-            lastChallenge = NSDate(timeIntervalSince1970: 0)
-            challenge = nil
-            bar = [:]
-        }
+            }
     }
 
     static func save() -> String {
@@ -238,6 +240,8 @@ class Challenge {
         if (progress >= total) {
             if (!completed) {
                 complete()
+            } else {
+                Challenge.remove()
             }
         } else {
             if (Grid.active != nil && Challenge.bar[Grid.active!.mode.rawValue] == nil) {

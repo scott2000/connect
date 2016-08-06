@@ -10,8 +10,8 @@ import Foundation
 import SpriteKit
 
 class Tile {
-    static let size = 32 //36
-    static let spacing = 22 //18
+    static let size = 36
+    static let spacing = 18
     static let circle = SKShapeNode(circleOfRadius: CGFloat(Double(Tile.size)/2) - 1.5)
     static let wildcardCooldown = (12,24)
     static let powerupCooldown = (48,72)

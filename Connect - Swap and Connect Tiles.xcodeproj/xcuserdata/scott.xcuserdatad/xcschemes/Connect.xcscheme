@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D2BDF0601CE8CE5C0091DDF1"
-               BuildableName = "Connect - Swap and Connect Dots.app"
-               BlueprintName = "Connect - Swap and Connect Dots"
-               ReferencedContainer = "container:Connect - Swap and Connect Dots.xcodeproj">
+               BuildableName = "Connect - Swap and Connect Tiles.app"
+               BlueprintName = "Connect - Swap and Connect Tiles"
+               ReferencedContainer = "container:Connect - Swap and Connect Tiles.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D2BDF0781CE8CE5C0091DDF1"
-               BuildableName = "Connect - Swap and Connect Dots.xctest"
-               BlueprintName = "Connect - Swap and Connect DotsTests"
-               ReferencedContainer = "container:Connect - Swap and Connect Dots.xcodeproj">
+               BuildableName = "Connect - Swap and Connect Tiles.xctest"
+               BlueprintName = "Connect - Swap and Connect TilesTests"
+               ReferencedContainer = "container:Connect - Swap and Connect Tiles.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D2BDF0831CE8CE5C0091DDF1"
-               BuildableName = "Connect - Swap and Connect Dots.xctest"
-               BlueprintName = "Connect - Swap and Connect DotsUITests"
-               ReferencedContainer = "container:Connect - Swap and Connect Dots.xcodeproj">
+               BuildableName = "Connect - Swap and Connect Tiles.xctest"
+               BlueprintName = "Connect - Swap and Connect TilesUITests"
+               ReferencedContainer = "container:Connect - Swap and Connect Tiles.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -53,9 +53,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D2BDF0601CE8CE5C0091DDF1"
-            BuildableName = "Connect - Swap and Connect Dots.app"
-            BlueprintName = "Connect - Swap and Connect Dots"
-            ReferencedContainer = "container:Connect - Swap and Connect Dots.xcodeproj">
+            BuildableName = "Connect - Swap and Connect Tiles.app"
+            BlueprintName = "Connect - Swap and Connect Tiles"
+            ReferencedContainer = "container:Connect - Swap and Connect Tiles.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D2BDF0601CE8CE5C0091DDF1"
-            BuildableName = "Connect - Swap and Connect Dots.app"
-            BlueprintName = "Connect - Swap and Connect Dots"
-            ReferencedContainer = "container:Connect - Swap and Connect Dots.xcodeproj">
+            BuildableName = "Connect - Swap and Connect Tiles.app"
+            BlueprintName = "Connect - Swap and Connect Tiles"
+            ReferencedContainer = "container:Connect - Swap and Connect Tiles.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -95,9 +95,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D2BDF0601CE8CE5C0091DDF1"
-            BuildableName = "Connect - Swap and Connect Dots.app"
-            BlueprintName = "Connect - Swap and Connect Dots"
-            ReferencedContainer = "container:Connect - Swap and Connect Dots.xcodeproj">
+            BuildableName = "Connect - Swap and Connect Tiles.app"
+            BlueprintName = "Connect - Swap and Connect Tiles"
+            ReferencedContainer = "container:Connect - Swap and Connect Tiles.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

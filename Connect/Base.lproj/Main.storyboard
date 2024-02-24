@@ -10,7 +10,7 @@
         <!--Difficulty-->
         <scene sceneID="IaC-ef-PuS">
             <objects>
-                <viewController title="Difficulty" id="LRp-Mb-c89" customClass="DifficultyViewController" customModule="Connect___Swap_and_Connect_Tiles" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Difficulty" modalPresentationStyle="fullScreen" id="LRp-Mb-c89" customClass="DifficultyViewController" customModule="Connect___Swap_and_Connect_Tiles" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="fjk-Ss-V1C"/>
                         <viewControllerLayoutGuide type="bottom" id="Gbi-Lf-ait"/>
@@ -101,6 +101,7 @@
                             <constraint firstItem="SHy-m6-TRN" firstAttribute="centerY" secondItem="sm5-7V-8BI" secondAttribute="centerY" id="WB4-eG-KSL"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="SPu-WO-rTS"/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
                         <outlet property="HardButton" destination="oAm-Wp-cyu" id="FfW-N5-I65"/>
@@ -111,12 +112,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lT3-Qy-atp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="150" y="550"/>
+            <point key="canvasLocation" x="121" y="550"/>
         </scene>
         <!--Game-->
         <scene sceneID="J6F-Lx-dqv">
             <objects>
-                <viewController title="Game" id="FVS-fS-TRJ" customClass="GameViewController" customModule="Connect___Swap_and_Connect_Tiles" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Game" modalPresentationStyle="fullScreen" id="FVS-fS-TRJ" customClass="GameViewController" customModule="Connect___Swap_and_Connect_Tiles" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="XUE-By-Kwn"/>
                         <viewControllerLayoutGuide type="bottom" id="Z9U-hy-Q87"/>
@@ -169,6 +170,7 @@
                             </mask>
                         </variation>
                     </view>
+                    <navigationItem key="navigationItem" id="R67-Sr-vPU"/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
                         <segue destination="BV1-FR-VrT" kind="show" identifier="pause" id="HMt-rG-OuI"/>
@@ -181,7 +183,7 @@
         <!--Pause-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController title="Pause" id="BV1-FR-VrT" customClass="PauseViewController" customModule="Connect___Swap_and_Connect_Tiles" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Pause" modalPresentationStyle="fullScreen" id="BV1-FR-VrT" customClass="PauseViewController" customModule="Connect___Swap_and_Connect_Tiles" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8aa-yV-Osq"/>
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
@@ -257,6 +259,7 @@
                             <constraint firstItem="57C-hE-4l0" firstAttribute="centerY" secondItem="3se-qz-xqx" secondAttribute="centerY" id="zz1-iQ-Egy"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="3j0-AB-djh"/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
                         <outlet property="MainLabel" destination="QUt-cf-5xI" id="OKU-2h-Xce"/>
@@ -270,7 +273,7 @@
         <!--Main-->
         <scene sceneID="FEu-Sl-gvy">
             <objects>
-                <viewController title="Main" id="x6D-7U-tAK" customClass="MainViewController" customModule="Connect___Swap_and_Connect_Tiles" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Main" modalPresentationStyle="fullScreen" id="x6D-7U-tAK" customClass="MainViewController" customModule="Connect___Swap_and_Connect_Tiles" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="wiw-O8-dvV"/>
                         <viewControllerLayoutGuide type="bottom" id="YFu-g2-WCO"/>
@@ -521,8 +524,8 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="vIl-l3-dny"/>
-        <segue reference="Drp-0E-ekO"/>
+        <segue reference="v9Q-S9-2ES"/>
+        <segue reference="lD3-b6-Qtp"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="Back" width="60" height="60"/>

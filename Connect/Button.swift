@@ -16,26 +16,26 @@ class Button: UIButton {
         super.init(coder: aDecoder)
         switch (tag) {
         case 0:
-            Grid.create(CGSize(width: 1024, height: 768))
+            Grid.create(size: CGSize(width: 1024, height: 768))
             if (Grid.level >= Grid.maxLevel) {
-                setImage(UIImage(named: "Endless"), forState: .Normal)
+                setImage(UIImage(named: "Endless"), for: .normal)
             } else {
-                setImage(UIImage(named: "Play"), forState: .Normal)
+                setImage(UIImage(named: "Play"), for: .normal)
             }
         case 1:
-            setImage(UIImage(named: "Timed"), forState: .Normal)
+            setImage(UIImage(named: "Timed"), for: .normal)
         case 2:
-            setImage(UIImage(named: "Moves"), forState: .Normal)
+            setImage(UIImage(named: "Moves"), for: .normal)
         case -3:
-            setImage(UIImage(named: "Back"), forState: .Normal)
+            setImage(UIImage(named: "Back"), for: .normal)
         case -4:
-            setImage(UIImage(named: "PlaySmall"), forState: .Normal)
+            setImage(UIImage(named: "PlaySmall"), for: .normal)
         case -5:
-            setImage(UIImage(named: "Main"), forState: .Normal)
+            setImage(UIImage(named: "Main"), for: .normal)
         case -6:
-            setImage(UIImage(named: "Pause"), forState: .Normal)
+            setImage(UIImage(named: "Pause"), for: .normal)
         default:
-            setImage(nil, forState: .Normal)
+            setImage(nil, for: .normal)
         }
         if (tag > -6) {
             backgroundColor = Tile.getColor(.Blue)

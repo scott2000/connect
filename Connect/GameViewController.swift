@@ -10,12 +10,12 @@ import UIKit
 import SpriteKit
 
 class GameViewController: UIViewController {
-    @IBAction func PauseGame(sender: UIButton) {
+    @IBAction func PauseGame(_ sender: UIButton) {
         Grid.menuSound?.play()
         Grid.active?.pause()
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         let g = Grid.active!
         if (g.running) {
@@ -43,32 +43,31 @@ class GameViewController: UIViewController {
             skView.ignoresSiblingOrder = true
             
             /* Set the scale mode to scale to fit the window */
-            Grid.active!.scaleMode = .AspectFill
+            Grid.active!.scaleMode = .aspectFill
             
             skView.presentScene(Grid.active!)
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         prepare()
     }
 
-    override func shouldAutorotate() -> Bool {
-        return false
+    override var shouldAutorotate: Bool {
+        get { false }
     }
     
-    
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return .Portrait
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        get { .portrait }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
     }
-
-    override func prefersStatusBarHidden() -> Bool {
-        return true
+    
+    override var prefersStatusBarHidden: Bool {
+        get { true }
     }
 }

@@ -17,7 +17,7 @@ class Records {
             chain = 0
             points = 0
         } else {
-            let data = s!.componentsSeparatedByString(".")
+            let data = s!.components(separatedBy: ".")
             chain = Int(data[0]) ?? 0
             points = Int(data[1]) ?? 0
         }

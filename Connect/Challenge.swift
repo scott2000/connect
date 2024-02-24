@@ -12,7 +12,7 @@ import SpriteKit
 
 class Challenge {
     static var challenge: Challenge? = nil
-    static var lastChallenge: NSDate = NSDate()
+    static var lastChallenge: Date = Date()
     static var bar: [Int: Bar?] = [:]
     var daily: Bool
     let goal: Goal
@@ -31,7 +31,7 @@ class Challenge {
         if (Grid.active != nil && Tile.width > 3 && Tile.height > 3) {
             if (Grid.level >= 7) {
                 if (-lastChallenge.timeIntervalSinceNow >= 60*60*24) {
-                    Challenge.lastChallenge = NSDate()
+                    Challenge.lastChallenge = Date()
                     var i = 0
                     var g: Goal? = nil
                     switch(arc4random_uniform(Int(arc4random_uniform(2)) == 1 ? 5 : 4)) {
@@ -54,7 +54,7 @@ class Challenge {
                         return
                     }
                     challenge = Challenge(goal: g!, total: i, daily: true)
-                    print("Daily Challenge: \(challenge!.goal.text(challenge!.progress, best: challenge!.best, total: challenge!.total))")
+                    print("Daily Challenge: \(challenge!.goal.text(progress: challenge!.progress, best: challenge!.best, total: challenge!.total))")
                 } else if (challenge == nil) {
                     var i = 0
                     var g: Goal? = nil
@@ -84,14 +84,14 @@ class Challenge {
                         return
                     }
                     challenge = Challenge(goal: g!, total: i, daily: false)
-                    print("Challenge: \(challenge!.goal.text(challenge!.progress, best: challenge!.best, total: challenge!.total))")
+                    print("Challenge: \(challenge!.goal.text(progress: challenge!.progress, best: challenge!.best, total: challenge!.total))")
                 }
             } else if (challenge != nil) {
-                lastChallenge = NSDate(timeIntervalSince1970: 0)
+                lastChallenge = Date(timeIntervalSince1970: 0)
                 challenge = nil
                 bar = [:]
             }
-            }
+        }
     }
 
     static func save() -> String {
@@ -104,8 +104,8 @@ class Challenge {
     
     static func load(s: String) {
         if (Grid.level >= 7) {
-            let a = s.componentsSeparatedByString(".")
-            lastChallenge = NSDate(timeIntervalSince1970: NSTimeInterval(Int(a[0])!))
+            let a = s.components(separatedBy: ".")
+            lastChallenge = Date(timeIntervalSince1970: TimeInterval(Int(a[0])!))
             if (a.count >= 6) {
                 challenge = Challenge(goal: Goal.from(a[1]), total: Int(a[4])!, daily: Int(a[5])! == 1)
                 challenge!.progress = Int(a[2])!
@@ -113,10 +113,10 @@ class Challenge {
             }
             new()
         } else {
-            lastChallenge = NSDate(timeIntervalSince1970: 0)
+            lastChallenge = Date(timeIntervalSince1970: 0)
         }
         if (challenge != nil) {
-            print("\(challenge!.daily ? "Daily Challenge" : "Challenge"): \(challenge!.goal.text(challenge!.progress, best: challenge!.best, total: challenge!.total))")
+            print("\(challenge!.daily ? "Daily Challenge" : "Challenge"): \(challenge!.goal.text(progress: challenge!.progress, best: challenge!.best, total: challenge!.total))")
         }
     }
     
@@ -129,7 +129,7 @@ class Challenge {
         case Survive
         case Points
         
-        static func from(s: String) -> Goal {
+        static func from(_ s: String) -> Goal {
             switch (s) {
             case "1":
                 return .Wildcards
@@ -145,7 +145,7 @@ class Challenge {
                 return .Points
             default:
                 if (s.hasPrefix("0")) {
-                    return .Tiles(Tile.Color(rawValue: Int(s.substringFromIndex(s.startIndex.successor()))!)!)
+                    return .Tiles(Tile.Color(rawValue: Int(s.dropFirst(1))!)!)
                 } else {
                     return .Chain
                 }
@@ -203,7 +203,7 @@ class Challenge {
                 color = Tile.getColor(.Blue)
             }
         } else {
-            color = UIColor.grayColor()
+            color = UIColor.gray
         }
         check()
     }
@@ -222,9 +222,9 @@ class Challenge {
             let notification = UILocalNotification()
             notification.alertBody = "New Daily Challenge Available"
             notification.alertAction = "open"
-            notification.fireDate = NSDate(timeInterval: 60*60*24, sinceDate: Challenge.lastChallenge)
+            notification.fireDate = Date(timeInterval: 60*60*24, since: Challenge.lastChallenge)
             notification.alertTitle = "New Challenge"
-            UIApplication.sharedApplication().scheduleLocalNotification(notification)
+            UIApplication.shared.scheduleLocalNotification(notification)
         } else {
             Tile.cooldown = min(Tile.cooldown-72,-18)
             let increase = Tile.rg((256,512))
@@ -245,9 +245,9 @@ class Challenge {
             }
         } else {
             if (Grid.active != nil && Challenge.bar[Grid.active!.mode.rawValue] == nil) {
-                Challenge.bar[Grid.active!.mode.rawValue] = Bar(current: progress, max: total, color: color, index: -1, text: (daily ? "DAILY: " : "") + goal.text(progress, best: best, total: total), grid: Grid.active)
+                Challenge.bar[Grid.active!.mode.rawValue] = Bar(current: progress, max: total, color: color, index: -1, text: (daily ? "DAILY: " : "") + goal.text(progress: progress, best: best, total: total), grid: Grid.active)
             } else if (Grid.active != nil) {
-                Challenge.bar[Grid.active!.mode.rawValue]!!.updateBar(progress, max: total, color: color, text: (daily ? "DAILY: " : "") + goal.text(progress, best: best, total: total), before: false)
+                Challenge.bar[Grid.active!.mode.rawValue]!!.updateBar(current: progress, max: total, color: color, text: (daily ? "DAILY: " : "") + goal.text(progress: progress, best: best, total: total), before: false)
             }
         }
     }

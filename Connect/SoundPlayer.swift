@@ -10,11 +10,11 @@ import Foundation
 import AudioToolbox
 
 class SoundPlayer {
-    let soundURL: NSURL
+    let soundURL: URL
     var id: SystemSoundID = 0
     
     static func getSound(name: String) -> SoundPlayer? {
-        if let url = NSBundle.mainBundle().URLForResource(name, withExtension: "wav") {
+        if let url = Bundle.main.url(forResource: name, withExtension: "wav") {
             return SoundPlayer(url: url)
         } else {
             print ("Failed to locate \"\(name).wav\"")
@@ -22,9 +22,9 @@ class SoundPlayer {
         }
     }
     
-    init(url: NSURL) {
+    init(url: URL) {
         soundURL = url
-        AudioServicesCreateSystemSoundID(soundURL, &id)
+        AudioServicesCreateSystemSoundID(soundURL as CFURL, &id)
     }
     
     deinit {

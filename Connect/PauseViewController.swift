@@ -14,14 +14,14 @@ class PauseViewController: UIViewController {
     @IBOutlet weak var MainLabel: UILabel!
     @IBOutlet weak var SubLabel: UILabel!
     
-    @IBAction func dismissAnimated(sender: UIButton) {
+    @IBAction func dismissAnimated(_ sender: UIButton) {
         Grid.menuSound?.play()
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func main(sender: UIButton) {
+    @IBAction func main(_ sender: UIButton) {
         Grid.menuSound?.play()
-        MainViewController.mcont?.dismissViewControllerAnimated(true, completion: nil)
+        MainViewController.mcont?.dismiss(animated: true, completion: nil)
     }
     
     func prepare() {
@@ -29,17 +29,17 @@ class PauseViewController: UIViewController {
         SubLabel.text = Grid.display.sub
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         prepare()
     }
     
-    override func shouldAutorotate() -> Bool {
-        return false
+    override var shouldAutorotate: Bool {
+        get { false }
     }
     
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return .Portrait
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        get { .portrait }
     }
     
     override func didReceiveMemoryWarning() {
@@ -47,7 +47,7 @@ class PauseViewController: UIViewController {
         // Release any cached data, images, etc that aren't in use.
     }
     
-    override func prefersStatusBarHidden() -> Bool {
-        return true
+    override var prefersStatusBarHidden: Bool {
+        get { true }
     }
 }

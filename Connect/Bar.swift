@@ -34,8 +34,8 @@ class Bar {
         self.position = position
         self.width = width
         self.color = color
-        back = SKSpriteNode(color: UIColor.lightGrayColor(), size: CGSize(width: width, height: 5))
-        separator = SKSpriteNode(color: UIColor.darkGrayColor(), size: CGSize(width: 4, height: 13))
+        back = SKSpriteNode(color: UIColor.lightGray, size: CGSize(width: width, height: 5))
+        separator = SKSpriteNode(color: UIColor.darkGray, size: CGSize(width: 4, height: 13))
         u = (Double(width)*Double(min(current,max))/Double(max))
         front = SKSpriteNode(color: color, size: CGSize(width: u, height: 9))
         createBar()
@@ -56,8 +56,8 @@ class Bar {
         self.width = Int(b.x-a.x-CGFloat(Tile.size/2))
         let oy = CGFloat(Tile.spacing)/2+CGFloat((i ? (-index)-1 : index)*24)
         self.position = CGPoint(x: a.x-CGFloat(Tile.size/2), y: i ? a.y-oy : a.y+oy)
-        back = SKSpriteNode(color: UIColor.lightGrayColor(), size: CGSize(width: width, height: 5))
-        separator = SKSpriteNode(color: UIColor.darkGrayColor(), size: CGSize(width: 4, height: 13))
+        back = SKSpriteNode(color: UIColor.lightGray, size: CGSize(width: width, height: 5))
+        separator = SKSpriteNode(color: UIColor.darkGray, size: CGSize(width: 4, height: 13))
         u = (Double(width)*Double(min(current,max))/Double(max))
         front = SKSpriteNode(color: color, size: CGSize(width: u, height: 9))
         fs = 14+(7*CGFloat(Grid.level-7)/CGFloat(Grid.maxLevel-7))
@@ -72,46 +72,46 @@ class Bar {
         back.position = position
         back.position.x += CGFloat(width/2)
         back.zPosition = -288
-        back.blendMode = .Replace
+        back.blendMode = .replace
         scene?.addChild(back)
         separator.zPosition = -286
-        separator.blendMode = .Replace
+        separator.blendMode = .replace
         scene?.addChild(separator)
         if (text != nil) {
             label = SKLabelNode(text: text)
             label!.position = CGPoint(x: 0, y: Tile.spacing/2+6)
             label!.fontName = Grid.font
             label!.fontSize = fs
-            label!.fontColor = UIColor.blackColor()
+            label!.fontColor = UIColor.black
             back.addChild(label!)
         }
         front.anchorPoint = CGPoint(x: 0, y: 0.5)
         front.position = position
 //            front.position.x += CGFloat(u/2)
         front.zPosition = -287
-        front.blendMode = .Replace
+        front.blendMode = .replace
         scene?.addChild(front)
         separator.position = position
         separator.position.x += CGFloat(u)
     }
     
     func updateBar(current: Int) {
-        updateBar(current, text: text)
+        updateBar(current: current, text: text)
     }
     
     func updateBar(current: Int, color: UIColor) {
         self.color = color
-        updateBar(current, text: text)
+        updateBar(current: current, text: text)
     }
     
     func updateBar(current: Int, max: Int, color: UIColor, text: String?, before: Bool) {
         if (!before) {
-            updateBar(current, text: text)
+            updateBar(current: current, text: text)
         }
         self.max = max
         self.color = color
         if (before) {
-            updateBar(current, text: text)
+            updateBar(current: current, text: text)
         }
     }
     
@@ -125,10 +125,10 @@ class Bar {
             self.text = text
             u = (Double(width)*Double(min(current,max))/Double(max))
             separator.removeAllActions()
-            separator.runAction(SKAction.moveToX(position.x + CGFloat(u), duration: t), withKey: "Move\(current)-\(t)")
+            separator.run(SKAction.moveTo(x: position.x + CGFloat(u), duration: t), withKey: "Move\(current)-\(t)")
             label?.text = text
             front.removeAllActions()
-            front.runAction(SKAction.resizeToWidth(CGFloat(u), duration: t), withKey: "Resize\(current)-\(t)")
+            front.run(SKAction.resize(toWidth: CGFloat(u), duration: t), withKey: "Resize\(current)-\(t)")
         }
     }
     

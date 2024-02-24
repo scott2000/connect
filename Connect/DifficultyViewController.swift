@@ -18,40 +18,40 @@ class DifficultyViewController: UIViewController {
     
     @IBOutlet weak var ModeLabel: UILabel!
     
-    @IBAction func DifficultyPress(sender: Button) {
+    @IBAction func DifficultyPress(_ sender: Button) {
         Grid.menuSound?.play()
         Grid.active!.diff = Grid.Difficulty(rawValue: -(sender.tag+1))!
         print("Difficulty: \(Grid.active!.diff)")
     }
     
-    @IBAction func dismiss(sender: UIButton) {
+    @IBAction func dismiss(_ sender: UIButton) {
         Grid.menuSound?.play()
-        dismissViewControllerAnimated(false, completion: nil)
+        dismiss(animated: false, completion: nil)
     }
     func prepare() {
-        HighScoreLabel?.text = "High Score: \(MainViewController.number(Grid.active!.record!.points))"
-        LongestChainLabel?.text = "Longest Chain: \(MainViewController.number(Grid.active!.record!.chain))"
+        HighScoreLabel?.text = "High Score: \(MainViewController.number(n: Grid.active!.record!.points))"
+        LongestChainLabel?.text = "Longest Chain: \(MainViewController.number(n: Grid.active!.record!.chain))"
         if (Grid.diffs < 2) {
-            HardButton.backgroundColor = UIColor.lightGrayColor()
-            HardButton.enabled = false
+            HardButton.backgroundColor = UIColor.lightGray
+            HardButton.isEnabled = false
         } else {
             HardButton.backgroundColor = Tile.getColor(.Blue)
-            HardButton.enabled = true
+            HardButton.isEnabled = true
         }
         ModeLabel.text = MainViewController.mode
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         prepare()
     }
     
-    override func shouldAutorotate() -> Bool {
-        return false
+    override var shouldAutorotate: Bool {
+        get { false }
     }
     
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return .Portrait
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        get { .portrait }
     }
     
     override func didReceiveMemoryWarning() {
@@ -59,7 +59,7 @@ class DifficultyViewController: UIViewController {
         // Release any cached data, images, etc that aren't in use.
     }
     
-    override func prefersStatusBarHidden() -> Bool {
-        return true
+    override var prefersStatusBarHidden: Bool {
+        get { true }
     }
 }
